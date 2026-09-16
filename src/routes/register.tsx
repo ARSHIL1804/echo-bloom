@@ -47,10 +47,10 @@ function RegisterPage() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim()) return toast.error("Enter your full name");
-    if (!email.trim()) return toast.error("Enter your email");
-    if (password.length < 6) return toast.error("Password must be at least 6 characters");
-    if (password !== confirm) return toast.error("Passwords do not match");
+    if (!name.trim()) { toast.error("Enter your full name"); return; }
+    if (!email.trim()) { toast.error("Enter your email"); return; }
+    if (password.length < 6) { toast.error("Password must be at least 6 characters"); return; }
+    if (password !== confirm) { toast.error("Passwords do not match"); return; }
 
     setSubmitting(true);
     const { data, error } = await supabase.auth.signUp({

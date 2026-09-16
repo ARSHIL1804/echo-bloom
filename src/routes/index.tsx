@@ -267,7 +267,7 @@ function Landing() {
                       typography: { ...heroConfig.typography, contentSize: 13 },
                       layout: { ...heroConfig.layout, padding: 0 },
                     })}
-                    testimonials={[demoTestimonials[4]]}
+                    testimonials={[demoTestimonials[4]!]}
                   />
                   <TestimonialWidget
                     type="minimal"
@@ -275,7 +275,7 @@ function Landing() {
                       ...heroConfig,
                       layout: { ...heroConfig.layout, padding: 0, columns: 1 },
                     })}
-                    testimonials={[demoTestimonials[5]]}
+                    testimonials={[demoTestimonials[5]!]}
                   />
                 </div>
               </div>

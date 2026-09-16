@@ -33,7 +33,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const displayName =
-    profile?.name || (user?.user_metadata?.name as string) || user?.email?.split("@")[0] || "There";
+    profile?.name || (user?.user_metadata?.['name'] as string) || user?.email?.split("@")[0] || "There";
 
   const isActive = (to: string) => location.pathname === to || location.pathname.startsWith(to + "/");
 

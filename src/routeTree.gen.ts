@@ -14,13 +14,17 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as AuthenticatedBrandRouteImport } from './routes/_authenticated/brand'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as WidgetSlugRouteImport } from './routes/widget.$slug'
+import { Route as AuthenticatedLayoutsIndexRouteImport } from './routes/_authenticated/layouts/index'
 import { Route as AuthenticatedLayoutsNewRouteImport } from './routes/_authenticated/layouts/new'
 import { Route as AuthenticatedTestimonialsIndexRouteImport } from './routes/_authenticated/testimonials/index'
 import { Route as AuthenticatedTestimonialsIdRouteImport } from './routes/_authenticated/testimonials/$id'
 import { Route as AuthenticatedTestimonialsNewRouteImport } from './routes/_authenticated/testimonials/new'
 import { Route as AuthenticatedLayoutsIdIndexRouteImport } from './routes/_authenticated/layouts/$id/index'
+import { Route as AuthenticatedLayoutsIdPreviewRouteImport } from './routes/_authenticated/layouts/$id/preview'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,9 +50,19 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedBrandRoute = AuthenticatedBrandRouteImport.update({
+  id: '/brand',
+  path: '/brand',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const WidgetSlugRoute = WidgetSlugRouteImport.update({
@@ -56,6 +70,12 @@ const WidgetSlugRoute = WidgetSlugRouteImport.update({
   path: '/widget/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedLayoutsIndexRoute =
+  AuthenticatedLayoutsIndexRouteImport.update({
+    id: '/layouts/',
+    path: '/layouts/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedLayoutsNewRoute = AuthenticatedLayoutsNewRouteImport.update({
   id: '/layouts/new',
   path: '/layouts/new',
@@ -85,18 +105,28 @@ const AuthenticatedLayoutsIdIndexRoute =
     path: '/layouts/$id/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedLayoutsIdPreviewRoute =
+  AuthenticatedLayoutsIdPreviewRouteImport.update({
+    id: '/layouts/$id/preview',
+    path: '/layouts/$id/preview',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/brand': typeof AuthenticatedBrandRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/widget/$slug': typeof WidgetSlugRoute
   '/layouts/new': typeof AuthenticatedLayoutsNewRoute
   '/testimonials/$id': typeof AuthenticatedTestimonialsIdRoute
   '/testimonials/new': typeof AuthenticatedTestimonialsNewRoute
+  '/layouts/': typeof AuthenticatedLayoutsIndexRoute
   '/testimonials/': typeof AuthenticatedTestimonialsIndexRoute
+  '/layouts/$id/preview': typeof AuthenticatedLayoutsIdPreviewRoute
   '/layouts/$id/': typeof AuthenticatedLayoutsIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -104,12 +134,16 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/brand': typeof AuthenticatedBrandRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/widget/$slug': typeof WidgetSlugRoute
   '/layouts/new': typeof AuthenticatedLayoutsNewRoute
   '/testimonials/$id': typeof AuthenticatedTestimonialsIdRoute
   '/testimonials/new': typeof AuthenticatedTestimonialsNewRoute
+  '/layouts': typeof AuthenticatedLayoutsIndexRoute
   '/testimonials': typeof AuthenticatedTestimonialsIndexRoute
+  '/layouts/$id/preview': typeof AuthenticatedLayoutsIdPreviewRoute
   '/layouts/$id': typeof AuthenticatedLayoutsIdIndexRoute
 }
 export interface FileRoutesById {
@@ -119,12 +153,16 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/brand': typeof AuthenticatedBrandRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/widget/$slug': typeof WidgetSlugRoute
   '/_authenticated/layouts/new': typeof AuthenticatedLayoutsNewRoute
   '/_authenticated/testimonials/$id': typeof AuthenticatedTestimonialsIdRoute
   '/_authenticated/testimonials/new': typeof AuthenticatedTestimonialsNewRoute
+  '/_authenticated/layouts/': typeof AuthenticatedLayoutsIndexRoute
   '/_authenticated/testimonials/': typeof AuthenticatedTestimonialsIndexRoute
+  '/_authenticated/layouts/$id/preview': typeof AuthenticatedLayoutsIdPreviewRoute
   '/_authenticated/layouts/$id/': typeof AuthenticatedLayoutsIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -134,12 +172,16 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/reset-password'
+    | '/brand'
     | '/dashboard'
+    | '/settings'
     | '/widget/$slug'
     | '/layouts/new'
     | '/testimonials/$id'
     | '/testimonials/new'
+    | '/layouts/'
     | '/testimonials/'
+    | '/layouts/$id/preview'
     | '/layouts/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -147,12 +189,16 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/reset-password'
+    | '/brand'
     | '/dashboard'
+    | '/settings'
     | '/widget/$slug'
     | '/layouts/new'
     | '/testimonials/$id'
     | '/testimonials/new'
+    | '/layouts'
     | '/testimonials'
+    | '/layouts/$id/preview'
     | '/layouts/$id'
   id:
     | '__root__'
@@ -161,12 +207,16 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/reset-password'
+    | '/_authenticated/brand'
     | '/_authenticated/dashboard'
+    | '/_authenticated/settings'
     | '/widget/$slug'
     | '/_authenticated/layouts/new'
     | '/_authenticated/testimonials/$id'
     | '/_authenticated/testimonials/new'
+    | '/_authenticated/layouts/'
     | '/_authenticated/testimonials/'
+    | '/_authenticated/layouts/$id/preview'
     | '/_authenticated/layouts/$id/'
   fileRoutesById: FileRoutesById
 }
@@ -216,11 +266,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/brand': {
+      id: '/_authenticated/brand'
+      path: '/brand'
+      fullPath: '/brand'
+      preLoaderRoute: typeof AuthenticatedBrandRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/widget/$slug': {
@@ -229,6 +293,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/widget/$slug'
       preLoaderRoute: typeof WidgetSlugRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/layouts/': {
+      id: '/_authenticated/layouts/'
+      path: '/layouts'
+      fullPath: '/layouts/'
+      preLoaderRoute: typeof AuthenticatedLayoutsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/layouts/new': {
       id: '/_authenticated/layouts/new'
@@ -265,24 +336,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLayoutsIdIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/layouts/$id/preview': {
+      id: '/_authenticated/layouts/$id/preview'
+      path: '/layouts/$id/preview'
+      fullPath: '/layouts/$id/preview'
+      preLoaderRoute: typeof AuthenticatedLayoutsIdPreviewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedBrandRoute: typeof AuthenticatedBrandRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedLayoutsNewRoute: typeof AuthenticatedLayoutsNewRoute
   AuthenticatedTestimonialsIdRoute: typeof AuthenticatedTestimonialsIdRoute
   AuthenticatedTestimonialsNewRoute: typeof AuthenticatedTestimonialsNewRoute
+  AuthenticatedLayoutsIndexRoute: typeof AuthenticatedLayoutsIndexRoute
   AuthenticatedTestimonialsIndexRoute: typeof AuthenticatedTestimonialsIndexRoute
+  AuthenticatedLayoutsIdPreviewRoute: typeof AuthenticatedLayoutsIdPreviewRoute
   AuthenticatedLayoutsIdIndexRoute: typeof AuthenticatedLayoutsIdIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedBrandRoute: AuthenticatedBrandRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedLayoutsNewRoute: AuthenticatedLayoutsNewRoute,
   AuthenticatedTestimonialsIdRoute: AuthenticatedTestimonialsIdRoute,
   AuthenticatedTestimonialsNewRoute: AuthenticatedTestimonialsNewRoute,
+  AuthenticatedLayoutsIndexRoute: AuthenticatedLayoutsIndexRoute,
   AuthenticatedTestimonialsIndexRoute: AuthenticatedTestimonialsIndexRoute,
+  AuthenticatedLayoutsIdPreviewRoute: AuthenticatedLayoutsIdPreviewRoute,
   AuthenticatedLayoutsIdIndexRoute: AuthenticatedLayoutsIdIndexRoute,
 }
 

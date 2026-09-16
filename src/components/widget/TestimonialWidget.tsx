@@ -15,7 +15,7 @@ type Props = {
   config: WidgetConfig;
   testimonials: Testimonial[];
   /** Forces a narrower rendering (tablet/mobile preview). */
-  viewportWidth?: number;
+  viewportWidth?: number | undefined;
 };
 
 function Stars({ rating, config }: { rating: number; config: WidgetConfig }) {
@@ -251,7 +251,7 @@ export function TestimonialWidget({ type, config, testimonials, viewportWidth }:
       </div>
     );
   } else if (type === "featured") {
-    const t = testimonials[index] ?? testimonials[0];
+    const t = (testimonials[index] ?? testimonials[0])!;
     content = (
       <div
         style={{
