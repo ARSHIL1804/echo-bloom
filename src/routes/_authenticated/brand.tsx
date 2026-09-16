@@ -99,7 +99,7 @@ function BrandPage() {
     <div className="space-y-6">
       <PageHeader
         title="Brand"
-        description="Your brand details, colors, and fonts — reusable across every widget."
+        subtitle="Your brand details, colors, and fonts — reusable across every widget."
         action={
           <Button className="rounded-xl" onClick={submit} disabled={saveBrand.isPending}>
             {saveBrand.isPending ? (

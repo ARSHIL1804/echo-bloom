@@ -69,10 +69,10 @@ export function TestimonialForm({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const next: Record<string, string> = {};
-    if (!values.customer_name.trim()) next.customer_name = "Customer name is required";
-    if (!values.content.trim()) next.content = "Testimonial content is required";
+    if (!values.customer_name.trim()) next['customer_name'] = "Customer name is required";
+    if (!values.content.trim()) next['content'] = "Testimonial content is required";
     if (values.customer_email && !/^\S+@\S+\.\S+$/.test(values.customer_email))
-      next.customer_email = "Enter a valid email";
+      next['customer_email'] = "Enter a valid email";
     setErrors(next);
     if (Object.keys(next).length) return;
 
@@ -97,8 +97,8 @@ export function TestimonialForm({
               onChange={(e) => set("customer_name", e.target.value)}
               placeholder="Sarah Whitfield"
             />
-            {errors.customer_name && (
-              <p className="text-xs text-destructive">{errors.customer_name}</p>
+            {errors['customer_name'] && (
+              <p className="text-xs text-destructive">{errors['customer_name']}</p>
             )}
           </div>
           <div className="space-y-2">
@@ -109,8 +109,8 @@ export function TestimonialForm({
               onChange={(e) => set("customer_email", e.target.value)}
               placeholder="sarah@northwind.com"
             />
-            {errors.customer_email && (
-              <p className="text-xs text-destructive">{errors.customer_email}</p>
+            {errors['customer_email'] && (
+              <p className="text-xs text-destructive">{errors['customer_email']}</p>
             )}
           </div>
           <div className="space-y-2">
@@ -163,7 +163,7 @@ export function TestimonialForm({
             onChange={(e) => set("content", e.target.value)}
             placeholder="We shipped social proof across our whole marketing site in an afternoon…"
           />
-          {errors.content && <p className="text-xs text-destructive">{errors.content}</p>}
+          {errors['content'] && <p className="text-xs text-destructive">{errors['content']}</p>}
         </div>
       </section>
 

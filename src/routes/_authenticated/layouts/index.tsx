@@ -67,7 +67,7 @@ function LayoutsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Testimonial Layouts"
-        description="Create beautiful testimonial widgets for your website."
+        subtitle="Create beautiful testimonial widgets for your website."
         action={
           <Button asChild className="rounded-xl">
             <Link to="/layouts/new">
@@ -180,7 +180,7 @@ function LayoutsPage() {
         open={!!toDelete}
         onOpenChange={(open) => !open && setToDelete(null)}
         title="Delete layout?"
-        description="Are you sure you want to delete this layout? Any website embedding it will stop showing testimonials. This action cannot be undone."
+        subtitle="Are you sure you want to delete this layout? Any website embedding it will stop showing testimonials. This action cannot be undone."
         confirmLabel="Delete"
         loading={remove.isPending}
         onConfirm={async () => {

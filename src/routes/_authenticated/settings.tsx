@@ -83,7 +83,7 @@ function SettingsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Settings" description="Manage your account and preferences." />
+      <PageHeader title="Settings" subtitle="Manage your account and preferences." />
 
       <div className="grid max-w-3xl gap-5">
         <section className="surface-card space-y-4 p-6">

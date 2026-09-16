@@ -85,7 +85,7 @@ function PreviewPage() {
     <div className="space-y-6">
       <PageHeader
         title={layout.name}
-        description="Preview your widget, copy its public URL, and embed it on your site."
+        subtitle="Preview your widget, copy its public URL, and embed it on your site."
         action={
           <div className="flex flex-wrap gap-2">
             <Button asChild variant="outline" className="rounded-xl">
