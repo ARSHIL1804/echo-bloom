@@ -18,12 +18,17 @@ import { Route as AuthenticatedBillingRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedBrandRouteImport } from './routes/_authenticated/brand'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as FSlugRouteImport } from './routes/f.$slug'
 import { Route as WidgetSlugRouteImport } from './routes/widget.$slug'
+import { Route as AuthenticatedFormsIndexRouteImport } from './routes/_authenticated/forms/index'
+import { Route as AuthenticatedFormsIdRouteImport } from './routes/_authenticated/forms/$id'
+import { Route as AuthenticatedFormsNewRouteImport } from './routes/_authenticated/forms/new'
 import { Route as AuthenticatedLayoutsIndexRouteImport } from './routes/_authenticated/layouts/index'
 import { Route as AuthenticatedLayoutsNewRouteImport } from './routes/_authenticated/layouts/new'
 import { Route as AuthenticatedTestimonialsIndexRouteImport } from './routes/_authenticated/testimonials/index'
 import { Route as AuthenticatedTestimonialsIdRouteImport } from './routes/_authenticated/testimonials/$id'
 import { Route as AuthenticatedTestimonialsNewRouteImport } from './routes/_authenticated/testimonials/new'
+import { Route as ApiPublicSubmitTestimonialRouteImport } from './routes/api/public/submit-testimonial'
 import { Route as AuthenticatedLayoutsIdIndexRouteImport } from './routes/_authenticated/layouts/$id/index'
 import { Route as AuthenticatedLayoutsIdPreviewRouteImport } from './routes/_authenticated/layouts/$id/preview'
 
@@ -71,10 +76,30 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const FSlugRoute = FSlugRouteImport.update({
+  id: '/f/$slug',
+  path: '/f/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WidgetSlugRoute = WidgetSlugRouteImport.update({
   id: '/widget/$slug',
   path: '/widget/$slug',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedFormsIndexRoute = AuthenticatedFormsIndexRouteImport.update({
+  id: '/forms/',
+  path: '/forms/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedFormsIdRoute = AuthenticatedFormsIdRouteImport.update({
+  id: '/forms/$id',
+  path: '/forms/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedFormsNewRoute = AuthenticatedFormsNewRouteImport.update({
+  id: '/forms/new',
+  path: '/forms/new',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedLayoutsIndexRoute =
   AuthenticatedLayoutsIndexRouteImport.update({
@@ -105,6 +130,12 @@ const AuthenticatedTestimonialsNewRoute =
     path: '/testimonials/new',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicSubmitTestimonialRoute =
+  ApiPublicSubmitTestimonialRouteImport.update({
+    id: '/api/public/submit-testimonial',
+    path: '/api/public/submit-testimonial',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedLayoutsIdIndexRoute =
   AuthenticatedLayoutsIdIndexRouteImport.update({
     id: '/layouts/$id/',
@@ -127,10 +158,15 @@ export interface FileRoutesByFullPath {
   '/brand': typeof AuthenticatedBrandRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/f/$slug': typeof FSlugRoute
   '/widget/$slug': typeof WidgetSlugRoute
+  '/forms/$id': typeof AuthenticatedFormsIdRoute
+  '/forms/new': typeof AuthenticatedFormsNewRoute
   '/layouts/new': typeof AuthenticatedLayoutsNewRoute
   '/testimonials/$id': typeof AuthenticatedTestimonialsIdRoute
   '/testimonials/new': typeof AuthenticatedTestimonialsNewRoute
+  '/api/public/submit-testimonial': typeof ApiPublicSubmitTestimonialRoute
+  '/forms/': typeof AuthenticatedFormsIndexRoute
   '/layouts/': typeof AuthenticatedLayoutsIndexRoute
   '/testimonials/': typeof AuthenticatedTestimonialsIndexRoute
   '/layouts/$id/preview': typeof AuthenticatedLayoutsIdPreviewRoute
@@ -145,10 +181,15 @@ export interface FileRoutesByTo {
   '/brand': typeof AuthenticatedBrandRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/f/$slug': typeof FSlugRoute
   '/widget/$slug': typeof WidgetSlugRoute
+  '/forms/$id': typeof AuthenticatedFormsIdRoute
+  '/forms/new': typeof AuthenticatedFormsNewRoute
   '/layouts/new': typeof AuthenticatedLayoutsNewRoute
   '/testimonials/$id': typeof AuthenticatedTestimonialsIdRoute
   '/testimonials/new': typeof AuthenticatedTestimonialsNewRoute
+  '/api/public/submit-testimonial': typeof ApiPublicSubmitTestimonialRoute
+  '/forms': typeof AuthenticatedFormsIndexRoute
   '/layouts': typeof AuthenticatedLayoutsIndexRoute
   '/testimonials': typeof AuthenticatedTestimonialsIndexRoute
   '/layouts/$id/preview': typeof AuthenticatedLayoutsIdPreviewRoute
@@ -165,10 +206,15 @@ export interface FileRoutesById {
   '/_authenticated/brand': typeof AuthenticatedBrandRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/f/$slug': typeof FSlugRoute
   '/widget/$slug': typeof WidgetSlugRoute
+  '/_authenticated/forms/$id': typeof AuthenticatedFormsIdRoute
+  '/_authenticated/forms/new': typeof AuthenticatedFormsNewRoute
   '/_authenticated/layouts/new': typeof AuthenticatedLayoutsNewRoute
   '/_authenticated/testimonials/$id': typeof AuthenticatedTestimonialsIdRoute
   '/_authenticated/testimonials/new': typeof AuthenticatedTestimonialsNewRoute
+  '/api/public/submit-testimonial': typeof ApiPublicSubmitTestimonialRoute
+  '/_authenticated/forms/': typeof AuthenticatedFormsIndexRoute
   '/_authenticated/layouts/': typeof AuthenticatedLayoutsIndexRoute
   '/_authenticated/testimonials/': typeof AuthenticatedTestimonialsIndexRoute
   '/_authenticated/layouts/$id/preview': typeof AuthenticatedLayoutsIdPreviewRoute
@@ -185,10 +231,15 @@ export interface FileRouteTypes {
     | '/brand'
     | '/dashboard'
     | '/settings'
+    | '/f/$slug'
     | '/widget/$slug'
+    | '/forms/$id'
+    | '/forms/new'
     | '/layouts/new'
     | '/testimonials/$id'
     | '/testimonials/new'
+    | '/api/public/submit-testimonial'
+    | '/forms/'
     | '/layouts/'
     | '/testimonials/'
     | '/layouts/$id/preview'
@@ -203,10 +254,15 @@ export interface FileRouteTypes {
     | '/brand'
     | '/dashboard'
     | '/settings'
+    | '/f/$slug'
     | '/widget/$slug'
+    | '/forms/$id'
+    | '/forms/new'
     | '/layouts/new'
     | '/testimonials/$id'
     | '/testimonials/new'
+    | '/api/public/submit-testimonial'
+    | '/forms'
     | '/layouts'
     | '/testimonials'
     | '/layouts/$id/preview'
@@ -222,10 +278,15 @@ export interface FileRouteTypes {
     | '/_authenticated/brand'
     | '/_authenticated/dashboard'
     | '/_authenticated/settings'
+    | '/f/$slug'
     | '/widget/$slug'
+    | '/_authenticated/forms/$id'
+    | '/_authenticated/forms/new'
     | '/_authenticated/layouts/new'
     | '/_authenticated/testimonials/$id'
     | '/_authenticated/testimonials/new'
+    | '/api/public/submit-testimonial'
+    | '/_authenticated/forms/'
     | '/_authenticated/layouts/'
     | '/_authenticated/testimonials/'
     | '/_authenticated/layouts/$id/preview'
@@ -238,7 +299,9 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  FSlugRoute: typeof FSlugRoute
   WidgetSlugRoute: typeof WidgetSlugRoute
+  ApiPublicSubmitTestimonialRoute: typeof ApiPublicSubmitTestimonialRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -306,12 +369,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/f/$slug': {
+      id: '/f/$slug'
+      path: '/f/$slug'
+      fullPath: '/f/$slug'
+      preLoaderRoute: typeof FSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/widget/$slug': {
       id: '/widget/$slug'
       path: '/widget/$slug'
       fullPath: '/widget/$slug'
       preLoaderRoute: typeof WidgetSlugRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/forms/': {
+      id: '/_authenticated/forms/'
+      path: '/forms'
+      fullPath: '/forms/'
+      preLoaderRoute: typeof AuthenticatedFormsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/forms/$id': {
+      id: '/_authenticated/forms/$id'
+      path: '/forms/$id'
+      fullPath: '/forms/$id'
+      preLoaderRoute: typeof AuthenticatedFormsIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/forms/new': {
+      id: '/_authenticated/forms/new'
+      path: '/forms/new'
+      fullPath: '/forms/new'
+      preLoaderRoute: typeof AuthenticatedFormsNewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/layouts/': {
       id: '/_authenticated/layouts/'
@@ -348,6 +439,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTestimonialsNewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/submit-testimonial': {
+      id: '/api/public/submit-testimonial'
+      path: '/api/public/submit-testimonial'
+      fullPath: '/api/public/submit-testimonial'
+      preLoaderRoute: typeof ApiPublicSubmitTestimonialRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/layouts/$id/': {
       id: '/_authenticated/layouts/$id/'
       path: '/layouts/$id'
@@ -370,9 +468,12 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBrandRoute: typeof AuthenticatedBrandRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedFormsIdRoute: typeof AuthenticatedFormsIdRoute
+  AuthenticatedFormsNewRoute: typeof AuthenticatedFormsNewRoute
   AuthenticatedLayoutsNewRoute: typeof AuthenticatedLayoutsNewRoute
   AuthenticatedTestimonialsIdRoute: typeof AuthenticatedTestimonialsIdRoute
   AuthenticatedTestimonialsNewRoute: typeof AuthenticatedTestimonialsNewRoute
+  AuthenticatedFormsIndexRoute: typeof AuthenticatedFormsIndexRoute
   AuthenticatedLayoutsIndexRoute: typeof AuthenticatedLayoutsIndexRoute
   AuthenticatedTestimonialsIndexRoute: typeof AuthenticatedTestimonialsIndexRoute
   AuthenticatedLayoutsIdPreviewRoute: typeof AuthenticatedLayoutsIdPreviewRoute
@@ -384,9 +485,12 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBrandRoute: AuthenticatedBrandRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedFormsIdRoute: AuthenticatedFormsIdRoute,
+  AuthenticatedFormsNewRoute: AuthenticatedFormsNewRoute,
   AuthenticatedLayoutsNewRoute: AuthenticatedLayoutsNewRoute,
   AuthenticatedTestimonialsIdRoute: AuthenticatedTestimonialsIdRoute,
   AuthenticatedTestimonialsNewRoute: AuthenticatedTestimonialsNewRoute,
+  AuthenticatedFormsIndexRoute: AuthenticatedFormsIndexRoute,
   AuthenticatedLayoutsIndexRoute: AuthenticatedLayoutsIndexRoute,
   AuthenticatedTestimonialsIndexRoute: AuthenticatedTestimonialsIndexRoute,
   AuthenticatedLayoutsIdPreviewRoute: AuthenticatedLayoutsIdPreviewRoute,
@@ -402,7 +506,9 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  FSlugRoute: FSlugRoute,
   WidgetSlugRoute: WidgetSlugRoute,
+  ApiPublicSubmitTestimonialRoute: ApiPublicSubmitTestimonialRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

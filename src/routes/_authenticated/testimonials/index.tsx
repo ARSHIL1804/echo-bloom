@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { format } from "date-fns";
-import { Eye, MessageSquareQuote, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { Check, Eye, MessageSquareQuote, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
-import { useDeleteTestimonial, useTestimonials } from "@/lib/data";
+import { useBrands, useDeleteTestimonial, useSaveTestimonial, useTestimonials } from "@/lib/data";
 import { EmptyState, PageHeader } from "@/components/dashboard/DashboardShell";
 import { Rating, SkeletonRows, StatusBadge } from "@/components/dashboard/bits";
 import { ConfirmDialog } from "@/components/dashboard/ConfirmDialog";
@@ -47,11 +47,17 @@ const PAGE_SIZE = 8;
 function TestimonialsPage() {
   const { user } = useAuth();
   const { data, isLoading } = useTestimonials(user?.id);
+  const { data: brands } = useBrands(user?.id);
   const remove = useDeleteTestimonial();
+  const save = useSaveTestimonial(user?.id);
+
+  const brandName = (id?: string | null) =>
+    (brands ?? []).find((b) => b.id === id)?.name ?? "—";
 
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [rating, setRating] = useState("all");
+  const [brand, setBrand] = useState("all");
   const [sort, setSort] = useState("newest");
   const [page, setPage] = useState(1);
   const [toDelete, setToDelete] = useState<string | null>(null);
@@ -69,6 +75,8 @@ function TestimonialsPage() {
     }
     if (status !== "all") rows = rows.filter((t) => t.status === status);
     if (rating !== "all") rows = rows.filter((t) => t.rating === Number(rating));
+    if (brand !== "all")
+      rows = rows.filter((t) => (brand === "none" ? !t.brand_id : t.brand_id === brand));
     rows.sort((a, b) => {
       if (sort === "rating") return b.rating - a.rating;
       if (sort === "name") return a.customer_name.localeCompare(b.customer_name);
@@ -77,7 +85,7 @@ function TestimonialsPage() {
       return sort === "oldest" ? at - bt : bt - at;
     });
     return rows;
-  }, [data, search, status, rating, sort]);
+  }, [data, search, status, rating, brand, sort]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const current = Math.min(page, totalPages);
@@ -98,7 +106,7 @@ function TestimonialsPage() {
       />
 
       <div className="surface-card overflow-hidden">
-        <div className="grid gap-3 border-b p-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 border-b p-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
@@ -130,6 +138,26 @@ function TestimonialsPage() {
               {[5, 4, 3, 2, 1].map((r) => (
                 <SelectItem key={r} value={String(r)}>
                   {r} star{r > 1 ? "s" : ""}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select
+            value={brand}
+            onValueChange={(v) => {
+              setBrand(v);
+              setPage(1);
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Brand" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All brands</SelectItem>
+              <SelectItem value="none">No brand</SelectItem>
+              {(brands ?? []).map((b) => (
+                <SelectItem key={b.id} value={b.id}>
+                  {b.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -172,12 +200,13 @@ function TestimonialsPage() {
           <>
             {/* Table on larger screens */}
             <div className="hidden overflow-x-auto md:block">
-              <table className="w-full min-w-[860px] text-sm">
+              <table className="w-full min-w-[960px] text-sm">
                 <thead className="bg-muted/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
                   <tr>
                     <th className="px-5 py-3 font-medium">Customer</th>
                     <th className="px-5 py-3 font-medium">Testimonial</th>
                     <th className="px-5 py-3 font-medium">Company</th>
+                    <th className="px-5 py-3 font-medium">Brand</th>
                     <th className="px-5 py-3 font-medium">Rating</th>
                     <th className="px-5 py-3 font-medium">Status</th>
                     <th className="px-5 py-3 font-medium">Created</th>
@@ -192,6 +221,7 @@ function TestimonialsPage() {
                         {t.content}
                       </td>
                       <td className="px-5 py-3.5 text-muted-foreground">{t.company_name || "—"}</td>
+                      <td className="px-5 py-3.5 text-muted-foreground">{brandName(t.brand_id)}</td>
                       <td className="px-5 py-3.5">
                         <Rating value={t.rating} />
                       </td>
@@ -203,6 +233,20 @@ function TestimonialsPage() {
                       </td>
                       <td className="px-5 py-3.5">
                         <div className="flex justify-end gap-1">
+                          {t.form_id && t.status !== "published" && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              title="Approve submission"
+                              className="text-success hover:text-success"
+                              onClick={async () => {
+                                await save.mutateAsync({ id: t.id, values: { status: "published" } });
+                                toast.success("Testimonial published");
+                              }}
+                            >
+                              <Check className="size-4" />
+                            </Button>
+                          )}
                           <Button variant="ghost" size="icon" title="Preview" onClick={() => setPreview(t)}>
                             <Eye className="size-4" />
                           </Button>

@@ -6,6 +6,15 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { RatingInput } from "@/components/dashboard/bits";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useAuth } from "@/lib/auth";
+import { useBrands } from "@/lib/data";
 import type { Testimonial } from "@/lib/widget";
 
 export type TestimonialFormValues = {
@@ -18,6 +27,7 @@ export type TestimonialFormValues = {
   content: string;
   rating: number;
   status: "published" | "draft";
+  brand_id: string;
 };
 
 export function emptyValues(): TestimonialFormValues {
@@ -31,6 +41,7 @@ export function emptyValues(): TestimonialFormValues {
     content: "",
     rating: 5,
     status: "published",
+    brand_id: "",
   };
 }
 
@@ -45,7 +56,14 @@ export function toFormValues(t: Testimonial): TestimonialFormValues {
     content: t.content ?? "",
     rating: t.rating ?? 5,
     status: (t.status === "published" ? "published" : "draft") as "published" | "draft",
+    brand_id: t.brand_id ?? "",
   };
+}
+
+/** Convert form values into a database-ready record. */
+export function toRecord(values: TestimonialFormValues): Partial<Testimonial> {
+  const { brand_id, ...rest } = values;
+  return { ...rest, brand_id: brand_id || null };
 }
 
 export function TestimonialForm({
@@ -59,6 +77,8 @@ export function TestimonialForm({
   onSubmit: (values: TestimonialFormValues) => Promise<void>;
   onCancel: () => void;
 }) {
+  const { user } = useAuth();
+  const { data: brands } = useBrands(user?.id);
   const [values, setValues] = useState(initial);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
@@ -139,6 +159,28 @@ export function TestimonialForm({
               onChange={(e) => set("company_name", e.target.value)}
               placeholder="Northwind"
             />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="brand_id">Brand</Label>
+            <Select
+              value={values.brand_id || "none"}
+              onValueChange={(v) => set("brand_id", v === "none" ? "" : v)}
+            >
+              <SelectTrigger id="brand_id">
+                <SelectValue placeholder="No brand" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">No brand</SelectItem>
+                {(brands ?? []).map((b) => (
+                  <SelectItem key={b.id} value={b.id}>
+                    {b.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Used to filter testimonials when building widgets.
+            </p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="company_logo">Company logo URL</Label>

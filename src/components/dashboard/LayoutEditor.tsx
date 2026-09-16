@@ -14,7 +14,14 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
-import { copyToClipboard, useLayouts, useSaveLayout, useTestimonials, widgetUrl } from "@/lib/data";
+import {
+  copyToClipboard,
+  useBrands,
+  useLayouts,
+  useSaveLayout,
+  useTestimonials,
+  widgetUrl,
+} from "@/lib/data";
 import { formatLimit, usePlan } from "@/lib/plans";
 import {
   LAYOUT_TYPES,
@@ -46,6 +53,7 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
   const navigate = useNavigate();
   const { data: testimonials } = useTestimonials(user?.id);
   const { data: layouts } = useLayouts(user?.id);
+  const { data: brands } = useBrands(user?.id);
   const plan = usePlan(user?.id);
   const save = useSaveLayout(user?.id);
   const publishedCount = (layouts ?? []).filter((l) => l.status === "published").length;
@@ -56,6 +64,7 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
   const [config, setConfig] = useState<WidgetConfig>(mergeConfig(layout?.configuration));
   const [device, setDevice] = useState<DeviceKey>("desktop");
   const [search, setSearch] = useState("");
+  const [brandId, setBrandId] = useState<string>(layout?.brand_id ?? "");
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState<"draft" | "publish" | null>(null);
   const [dragId, setDragId] = useState<string | null>(null);
@@ -92,14 +101,16 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
   const previewTestimonials = selectedTestimonials.length ? selectedTestimonials : [];
 
   const filtered = useMemo(() => {
+    let rows = all;
+    if (brandId) rows = rows.filter((t) => t.brand_id === brandId);
     const q = search.trim().toLowerCase();
-    if (!q) return all;
-    return all.filter((t) =>
+    if (!q) return rows;
+    return rows.filter((t) =>
       [t.customer_name, t.company_name, t.content].filter(Boolean).some((v) =>
         v!.toLowerCase().includes(q),
       ),
     );
-  }, [all, search]);
+  }, [all, search, brandId]);
 
   function toggle(id: string) {
     setSelected((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
@@ -135,6 +146,7 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
         values: {
           name: name.trim(),
           type,
+          brand_id: brandId || null,
           selected_testimonials: selected,
           configuration: config as unknown as LayoutRecord["configuration"],
           status: mode === "publish" ? "published" : layout?.status ?? "draft",
@@ -269,13 +281,43 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
                 type="button"
                 className="text-xs font-medium text-primary hover:underline"
                 onClick={() => {
-                  setSelected(selected.length === all.length ? [] : all.map((t) => t.id));
+                  const ids = filtered.map((t) => t.id);
+                  const allPicked = ids.length > 0 && ids.every((id) => selected.includes(id));
+                  setSelected(
+                    allPicked
+                      ? selected.filter((id) => !ids.includes(id))
+                      : [...selected, ...ids.filter((id) => !selected.includes(id))],
+                  );
                   touch();
                 }}
               >
-                {selected.length === all.length && all.length > 0 ? "Clear all" : "Select all"}
+                {filtered.length > 0 && filtered.every((t) => selected.includes(t.id))
+                  ? "Clear all"
+                  : "Select all"}
               </button>
             </div>
+            {(brands ?? []).length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {[{ id: "", name: "All brands" }, ...(brands ?? [])].map((b) => (
+                  <button
+                    key={b.id || "all"}
+                    type="button"
+                    onClick={() => {
+                      setBrandId(b.id);
+                      touch();
+                    }}
+                    className={cn(
+                      "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                      brandId === b.id
+                        ? "border-primary bg-primary-soft text-primary"
+                        : "hover:bg-muted/60",
+                    )}
+                  >
+                    {b.name}
+                  </button>
+                ))}
+              </div>
+            )}
             <div className="relative mt-3">
               <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
@@ -296,7 +338,12 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
               </p>
             ) : (
               <div className="mt-3 max-h-72 space-y-1.5 overflow-y-auto pr-1">
-                {filtered.map((t) => {
+                {filtered.length === 0 ? (
+              <p className="mt-3 rounded-xl border border-dashed p-4 text-center text-xs text-muted-foreground">
+                No testimonials match this brand or search.
+              </p>
+            ) : null}
+            {filtered.map((t) => {
                   const isSelected = selected.includes(t.id);
                   return (
                     <div

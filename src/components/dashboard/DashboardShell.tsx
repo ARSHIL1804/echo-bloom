@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import {
+  ClipboardList,
   CreditCard,
   LayoutDashboard,
   LayoutGrid,
@@ -22,6 +23,7 @@ const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/testimonials", label: "Testimonials", icon: MessageSquareQuote },
   { to: "/layouts", label: "Layouts", icon: LayoutGrid },
+  { to: "/forms", label: "Forms", icon: ClipboardList },
   { to: "/brand", label: "Brand", icon: Palette },
   { to: "/billing", label: "Billing", icon: CreditCard },
   { to: "/settings", label: "Settings", icon: Settings },

@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useSaveTestimonial, useTestimonial } from "@/lib/data";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
-import { TestimonialForm, toFormValues } from "@/components/dashboard/TestimonialForm";
+import { TestimonialForm, toFormValues, toRecord } from "@/components/dashboard/TestimonialForm";
 
 export const Route = createFileRoute("/_authenticated/testimonials/$id")({
   component: EditTestimonial,
@@ -51,7 +51,7 @@ function EditTestimonial() {
         onCancel={() => navigate({ to: "/testimonials" })}
         onSubmit={async (values) => {
           try {
-            await save.mutateAsync({ id, values });
+            await save.mutateAsync({ id, values: toRecord(values) });
             toast.success("Testimonial saved successfully");
             navigate({ to: "/testimonials" });
           } catch (error) {

@@ -3,6 +3,8 @@ export type LayoutType = "grid" | "carousel" | "masonry" | "featured" | "list" |
 export type Testimonial = {
   id: string;
   user_id?: string;
+  brand_id?: string | null;
+  form_id?: string | null;
   customer_name: string;
   customer_email?: string | null;
   customer_avatar?: string | null;
@@ -152,6 +154,7 @@ export function initials(name: string) {
 export type LayoutRecord = {
   id: string;
   user_id?: string;
+  brand_id?: string | null;
   name: string;
   type: LayoutType | string;
   selected_testimonials: string[];

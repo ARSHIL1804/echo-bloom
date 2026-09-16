@@ -68,6 +68,62 @@ export type Database = {
         }
         Relationships: []
       }
+      forms: {
+        Row: {
+          auto_publish: boolean
+          brand_id: string | null
+          created_at: string
+          fields: Json
+          headline: string
+          id: string
+          intro: string
+          name: string
+          slug: string
+          status: string
+          thank_you: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auto_publish?: boolean
+          brand_id?: string | null
+          created_at?: string
+          fields?: Json
+          headline?: string
+          id?: string
+          intro?: string
+          name?: string
+          slug?: string
+          status?: string
+          thank_you?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auto_publish?: boolean
+          brand_id?: string | null
+          created_at?: string
+          fields?: Json
+          headline?: string
+          id?: string
+          intro?: string
+          name?: string
+          slug?: string
+          status?: string
+          thank_you?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forms_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       layouts: {
         Row: {
           brand_id: string | null
@@ -177,6 +233,7 @@ export type Database = {
       }
       testimonials: {
         Row: {
+          brand_id: string | null
           company_logo: string | null
           company_name: string | null
           content: string
@@ -184,6 +241,7 @@ export type Database = {
           customer_avatar: string | null
           customer_email: string | null
           customer_name: string
+          form_id: string | null
           id: string
           job_title: string | null
           rating: number
@@ -192,6 +250,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          brand_id?: string | null
           company_logo?: string | null
           company_name?: string | null
           content: string
@@ -199,6 +258,7 @@ export type Database = {
           customer_avatar?: string | null
           customer_email?: string | null
           customer_name: string
+          form_id?: string | null
           id?: string
           job_title?: string | null
           rating?: number
@@ -207,6 +267,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          brand_id?: string | null
           company_logo?: string | null
           company_name?: string | null
           content?: string
@@ -214,6 +275,7 @@ export type Database = {
           customer_avatar?: string | null
           customer_email?: string | null
           customer_name?: string
+          form_id?: string | null
           id?: string
           job_title?: string | null
           rating?: number
@@ -221,7 +283,22 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "testimonials_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "testimonials_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "forms"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -229,6 +306,24 @@ export type Database = {
     }
     Functions: {
       get_owner_plan: { Args: { _user_id: string }; Returns: string }
+      get_public_form: {
+        Args: { _slug: string }
+        Returns: {
+          background_color: string
+          body_font: string
+          brand_logo: string
+          brand_name: string
+          fields: Json
+          heading_font: string
+          headline: string
+          id: string
+          intro: string
+          name: string
+          primary_color: string
+          text_color: string
+          thank_you: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

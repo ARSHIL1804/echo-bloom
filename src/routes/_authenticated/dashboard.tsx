@@ -8,6 +8,7 @@ import {
   Pencil,
   Plus,
   Radio,
+  Check,
   Trash2,
   CheckCircle2,
 } from "lucide-react";
@@ -15,6 +16,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import {
   useDeleteTestimonial,
+  useSaveTestimonial,
   useLayouts,
   useProfile,
   useTestimonials,
@@ -56,12 +58,14 @@ function DashboardHome() {
   const { data: testimonials, isLoading: loadingT } = useTestimonials(user?.id);
   const { data: layouts, isLoading: loadingL } = useLayouts(user?.id);
   const remove = useDeleteTestimonial();
+  const save = useSaveTestimonial(user?.id);
   const [toDelete, setToDelete] = useState<string | null>(null);
 
   const name = profile?.name || user?.email?.split("@")[0] || "there";
   const list = testimonials ?? [];
   const published = list.filter((t) => t.status === "published");
   const activeWidgets = (layouts ?? []).filter((l) => l.status === "published");
+  const pending = list.filter((t) => t.form_id && t.status !== "published");
 
   return (
     <div className="space-y-8">
@@ -103,6 +107,69 @@ function DashboardHome() {
           loading={loadingL}
         />
       </div>
+
+      {pending.length > 0 && (
+        <section className="surface-card overflow-hidden">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b px-5 py-4">
+            <div>
+              <h2 className="font-display text-base font-bold">
+                Recent submissions
+                <span className="ml-2 rounded-full bg-primary-soft px-2.5 py-0.5 text-xs font-semibold text-primary">
+                  {pending.length} awaiting approval
+                </span>
+              </h2>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                Testimonials submitted through your collection forms.
+              </p>
+            </div>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/forms">Manage forms</Link>
+            </Button>
+          </div>
+          <div className="divide-y">
+            {pending.slice(0, 5).map((t) => (
+              <div
+                key={t.id}
+                className="flex flex-wrap items-start justify-between gap-3 px-5 py-4"
+              >
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold">
+                    {t.customer_name}
+                    {t.company_name ? (
+                      <span className="ml-2 text-xs font-normal text-muted-foreground">
+                        {t.company_name}
+                      </span>
+                    ) : null}
+                  </p>
+                  <p className="mt-1 line-clamp-2 max-w-xl text-sm text-muted-foreground">
+                    {t.content}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    className="rounded-xl"
+                    onClick={async () => {
+                      await save.mutateAsync({ id: t.id, values: { status: "published" } });
+                      toast.success("Testimonial published");
+                    }}
+                  >
+                    <Check className="size-3.5" /> Approve
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="rounded-xl text-destructive hover:text-destructive"
+                    onClick={() => setToDelete(t.id)}
+                  >
+                    <Trash2 className="size-3.5" /> Reject
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="surface-card overflow-hidden">
         <div className="flex items-center justify-between gap-3 border-b px-5 py-4">
