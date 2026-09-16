@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Loader2, Save } from "lucide-react";
+import { Loader2, Plus, Save, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
-import { useBrand, useSaveBrand, type Brand } from "@/lib/data";
+import { useBrands, useDeleteBrand, useSaveBrand, type Brand } from "@/lib/data";
+import { formatLimit, usePlan } from "@/lib/plans";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
+import { ConfirmDialog } from "@/components/dashboard/ConfirmDialog";
+import { UpgradeDialog } from "@/components/dashboard/UpgradeDialog";
 import { ColorField, FontField } from "@/components/dashboard/controls";
+import { cn } from "@/lib/utils";
 import { fontStack, initials } from "@/lib/widget";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,7 +36,7 @@ export const Route = createFileRoute("/_authenticated/brand")({
   }),
 });
 
-type Values = Omit<Brand, "id" | "user_id">;
+type Values = Omit<Brand, "id" | "user_id" | "created_at" | "updated_at">;
 
 const empty: Values = {
   name: "",
@@ -48,29 +52,43 @@ const empty: Values = {
   body_font: "Inter",
 };
 
+function toValues(brand: Brand): Values {
+  return {
+    name: brand.name ?? "",
+    website: brand.website ?? "",
+    logo: brand.logo ?? "",
+    description: brand.description ?? "",
+    primary_color: brand.primary_color,
+    secondary_color: brand.secondary_color,
+    text_color: brand.text_color,
+    background_color: brand.background_color,
+    font_family: brand.font_family,
+    heading_font: brand.heading_font,
+    body_font: brand.body_font,
+  };
+}
+
 function BrandPage() {
   const { user } = useAuth();
-  const { data: brand, isLoading } = useBrand(user?.id);
+  const { data: brands, isLoading } = useBrands(user?.id);
+  const plan = usePlan(user?.id);
   const saveBrand = useSaveBrand(user?.id);
+  const deleteBrand = useDeleteBrand();
+
+  const list = brands ?? [];
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [values, setValues] = useState<Values>(empty);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
+
+  const active = list.find((b) => b.id === selectedId) ?? list[0];
+  const activeId = active?.id;
 
   useEffect(() => {
-    if (brand) {
-      setValues({
-        name: brand.name ?? "",
-        website: brand.website ?? "",
-        logo: brand.logo ?? "",
-        description: brand.description ?? "",
-        primary_color: brand.primary_color,
-        secondary_color: brand.secondary_color,
-        text_color: brand.text_color,
-        background_color: brand.background_color,
-        font_family: brand.font_family,
-        heading_font: brand.heading_font,
-        body_font: brand.body_font,
-      });
-    }
-  }, [brand]);
+    if (activeId) setValues(toValues(active!));
+    else setValues(empty);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeId]);
 
   function set<K extends keyof Values>(key: K, value: Values[K]) {
     setValues((v) => ({ ...v, [key]: value }));
@@ -79,10 +97,35 @@ function BrandPage() {
   async function submit() {
     if (!values.name.trim()) { toast.error("Your brand needs a name"); return; }
     try {
-      await saveBrand.mutateAsync(values as never);
+      const result = await saveBrand.mutateAsync({
+        ...(activeId ? { id: activeId } : {}),
+        values: values as never,
+      });
+      if (!activeId && result) setSelectedId(result.id);
       toast.success("Brand saved successfully");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not save your brand");
+    }
+  }
+
+  function addBrand() {
+    if (list.length >= plan.brands) {
+      setUpgradeOpen(true);
+      return;
+    }
+    setSelectedId(null);
+    setValues(empty);
+  }
+
+  async function handleDelete() {
+    if (!activeId) return;
+    try {
+      await deleteBrand.mutateAsync(activeId);
+      setConfirmDelete(false);
+      setSelectedId(null);
+      toast.success("Brand deleted");
+    } catch {
+      toast.error("Could not delete brand");
     }
   }
 
@@ -107,10 +150,58 @@ function BrandPage() {
             ) : (
               <Save className="size-4" />
             )}
-            Save Brand
+            {activeId ? "Save Brand" : "Create Brand"}
           </Button>
         }
       />
+
+      <div className="flex flex-wrap items-center gap-2">
+        {list.map((brand) => (
+          <button
+            key={brand.id}
+            type="button"
+            onClick={() => setSelectedId(brand.id)}
+            className={cn(
+              "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+              brand.id === activeId
+                ? "border-primary bg-primary-soft text-primary"
+                : "border-border text-muted-foreground hover:bg-muted hover:text-foreground",
+            )}
+          >
+            {brand.logo ? (
+              <img src={brand.logo} alt="" className="size-4 rounded object-cover" />
+            ) : (
+              <span
+                className="grid size-4 place-items-center rounded-full text-[8px] font-bold text-white"
+                style={{ backgroundColor: brand.primary_color }}
+              >
+                {initials(brand.name || "?")}
+              </span>
+            )}
+            {brand.name || "Untitled brand"}
+          </button>
+        ))}
+        <button
+          type="button"
+          onClick={addBrand}
+          className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-border px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+        >
+          <Plus className="size-3.5" /> Add brand
+          <span className="text-xs opacity-70">
+            {list.length}/{formatLimit(plan.brands)}
+          </span>
+        </button>
+ {activeId && (
+          <Button
+            size="sm"
+            variant="ghost"
+            className="ml-auto rounded-xl text-danger hover:text-danger"
+            onClick={() => setConfirmDelete(true)}
+          >
+            <Trash2 className="size-3.5" /> Delete brand
+          </Button>
+        )}
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
         <div className="space-y-5">
@@ -289,6 +380,21 @@ function BrandPage() {
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={confirmDelete}
+        onOpenChange={setConfirmDelete}
+        title="Delete brand?"
+        body={`Are you sure you want to delete "${active?.name ?? "this brand"}"? Layouts using it will keep working without brand styling. This action cannot be undone.`}
+        confirmLabel="Delete"
+        onConfirm={handleDelete}
+      />
+      <UpgradeDialog
+        open={upgradeOpen}
+        onOpenChange={setUpgradeOpen}
+        currentPlan={plan.id}
+        reason={`The ${plan.name} plan includes ${formatLimit(plan.brands)} brand${plan.brands === 1 ? "" : "s"}. Upgrade to manage more brands.`}
+      />
     </div>
   );
 }
