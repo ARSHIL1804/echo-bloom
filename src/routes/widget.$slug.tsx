@@ -46,7 +46,7 @@ function PublicWidget() {
         testimonials.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
       }
       const { data: ownerPlan } = await supabase.rpc("get_owner_plan", {
-        _user_id: record.user_id,
+        _user_id: record.user_id!,
       });
       return { layout: record, testimonials, ownerPlan: (ownerPlan as string | null) ?? null };
     },
