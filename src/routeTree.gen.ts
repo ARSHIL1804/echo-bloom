@@ -16,6 +16,9 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as WidgetSlugRouteImport } from './routes/widget.$slug'
+import { Route as AuthenticatedTestimonialsIndexRouteImport } from './routes/_authenticated/testimonials/index'
+import { Route as AuthenticatedTestimonialsIdRouteImport } from './routes/_authenticated/testimonials/$id'
+import { Route as AuthenticatedTestimonialsNewRouteImport } from './routes/_authenticated/testimonials/new'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -51,6 +54,24 @@ const WidgetSlugRoute = WidgetSlugRouteImport.update({
   path: '/widget/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedTestimonialsIndexRoute =
+  AuthenticatedTestimonialsIndexRouteImport.update({
+    id: '/testimonials/',
+    path: '/testimonials/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedTestimonialsIdRoute =
+  AuthenticatedTestimonialsIdRouteImport.update({
+    id: '/testimonials/$id',
+    path: '/testimonials/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedTestimonialsNewRoute =
+  AuthenticatedTestimonialsNewRouteImport.update({
+    id: '/testimonials/new',
+    path: '/testimonials/new',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -59,6 +80,9 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/widget/$slug': typeof WidgetSlugRoute
+  '/testimonials/$id': typeof AuthenticatedTestimonialsIdRoute
+  '/testimonials/new': typeof AuthenticatedTestimonialsNewRoute
+  '/testimonials/': typeof AuthenticatedTestimonialsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -67,6 +91,9 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/widget/$slug': typeof WidgetSlugRoute
+  '/testimonials/$id': typeof AuthenticatedTestimonialsIdRoute
+  '/testimonials/new': typeof AuthenticatedTestimonialsNewRoute
+  '/testimonials': typeof AuthenticatedTestimonialsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -77,6 +104,9 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/widget/$slug': typeof WidgetSlugRoute
+  '/_authenticated/testimonials/$id': typeof AuthenticatedTestimonialsIdRoute
+  '/_authenticated/testimonials/new': typeof AuthenticatedTestimonialsNewRoute
+  '/_authenticated/testimonials/': typeof AuthenticatedTestimonialsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -87,6 +117,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/dashboard'
     | '/widget/$slug'
+    | '/testimonials/$id'
+    | '/testimonials/new'
+    | '/testimonials/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -95,6 +128,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/dashboard'
     | '/widget/$slug'
+    | '/testimonials/$id'
+    | '/testimonials/new'
+    | '/testimonials'
   id:
     | '__root__'
     | '/'
@@ -104,6 +140,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/_authenticated/dashboard'
     | '/widget/$slug'
+    | '/_authenticated/testimonials/$id'
+    | '/_authenticated/testimonials/new'
+    | '/_authenticated/testimonials/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -166,15 +205,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WidgetSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/testimonials/': {
+      id: '/_authenticated/testimonials/'
+      path: '/testimonials'
+      fullPath: '/testimonials/'
+      preLoaderRoute: typeof AuthenticatedTestimonialsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/testimonials/$id': {
+      id: '/_authenticated/testimonials/$id'
+      path: '/testimonials/$id'
+      fullPath: '/testimonials/$id'
+      preLoaderRoute: typeof AuthenticatedTestimonialsIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/testimonials/new': {
+      id: '/_authenticated/testimonials/new'
+      path: '/testimonials/new'
+      fullPath: '/testimonials/new'
+      preLoaderRoute: typeof AuthenticatedTestimonialsNewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedTestimonialsIdRoute: typeof AuthenticatedTestimonialsIdRoute
+  AuthenticatedTestimonialsNewRoute: typeof AuthenticatedTestimonialsNewRoute
+  AuthenticatedTestimonialsIndexRoute: typeof AuthenticatedTestimonialsIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedTestimonialsIdRoute: AuthenticatedTestimonialsIdRoute,
+  AuthenticatedTestimonialsNewRoute: AuthenticatedTestimonialsNewRoute,
+  AuthenticatedTestimonialsIndexRoute: AuthenticatedTestimonialsIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
