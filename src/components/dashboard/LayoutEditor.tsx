@@ -121,7 +121,7 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
     setSaving(mode);
     try {
       const result = await save.mutateAsync({
-        id: layout?.id,
+        ...(layout ? { id: layout.id } : {}),
         values: {
           name: name.trim(),
           type,

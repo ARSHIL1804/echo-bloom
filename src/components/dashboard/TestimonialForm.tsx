@@ -190,7 +190,7 @@ export function TestimonialForm({
                 key={value}
                 className="flex cursor-pointer items-start gap-3 rounded-xl border p-3.5 transition-colors hover:bg-muted/50"
               >
-                <RadioGroupItem value={value} className="mt-0.5" />
+                <RadioGroupItem value={value!} className="mt-0.5" />
                 <span>
                   <span className="block text-sm font-medium">{label}</span>
                   <span className="block text-xs text-muted-foreground">{hint}</span>
