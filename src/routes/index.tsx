@@ -109,26 +109,75 @@ const plans = [
   {
     name: "Free",
     price: "$0",
-    note: "For getting started",
-    features: ["20 testimonials", "2 layouts", "Basic customization"],
+    note: "For users trying the product",
+    features: [
+      "20 testimonials",
+      "2 published layouts",
+      "1 brand",
+      "All basic layouts",
+      "Basic customization",
+      "Public widget URL",
+      "Embed code",
+      "Testimonially branding",
+      "Community support",
+    ],
+  },
+  {
+    name: "Starter",
+    price: "$9",
+    note: "For indie hackers, creators and small businesses",
+    features: [
+      "100 testimonials",
+      "10 layouts",
+      "1 brand",
+      "All layouts",
+      "Full color customization",
+      "Typography customization",
+      "Custom fonts",
+      "Remove Testimonially branding",
+      "Custom widget URL",
+      "Basic analytics",
+      "Email support",
+    ],
   },
   {
     name: "Pro",
     price: "$19",
-    note: "For growing teams",
+    note: "For SaaS companies and growing businesses",
     highlight: true,
     features: [
       "Unlimited testimonials",
       "Unlimited layouts",
+      "3 brands",
       "Advanced customization",
+      "Advanced widget styling",
+      "Custom domain",
+      "Analytics",
+      "Multiple embed options",
+      "API access",
+      "Webhooks",
+      "Priority support",
       "Remove branding",
     ],
   },
   {
-    name: "Business",
+    name: "Agency",
     price: "$49",
-    note: "For agencies",
-    features: ["Everything in Pro", "Multiple brands", "Advanced analytics", "Team access"],
+    note: "For agencies & freelancers",
+    features: [
+      "Unlimited testimonials",
+      "Unlimited layouts",
+      "10 brands",
+      "Unlimited widgets",
+      "Custom domains",
+      "White-label",
+      "API",
+      "Webhooks",
+      "Client workspaces",
+      "Team members",
+      "Advanced analytics",
+      "Priority support",
+    ],
   },
 ];
 
@@ -412,10 +461,13 @@ function Landing() {
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-semibold text-primary">Pricing</p>
             <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
-              Simple pricing that scales
+              Pricing that grows with you
             </h2>
+            <p className="mt-3 text-muted-foreground">
+              Start free. Upgrade when your social proof does.
+            </p>
           </div>
-          <div className="mt-12 grid gap-5 lg:grid-cols-3">
+          <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {plans.map((plan) => (
               <div
                 key={plan.name}

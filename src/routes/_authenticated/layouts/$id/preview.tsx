@@ -7,10 +7,12 @@ import {
   copyToClipboard,
   embedCode,
   useLayout,
+  useLayouts,
   useSaveLayout,
   useTestimonials,
   widgetUrl,
 } from "@/lib/data";
+import { formatLimit, usePlan } from "@/lib/plans";
 import { mergeConfig, type LayoutType } from "@/lib/widget";
 import { TestimonialWidget } from "@/components/widget/TestimonialWidget";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
@@ -48,6 +50,9 @@ function PreviewPage() {
   const { user } = useAuth();
   const { data: layout, isLoading } = useLayout(id);
   const { data: testimonials } = useTestimonials(user?.id);
+  const { data: layouts } = useLayouts(user?.id);
+  const plan = usePlan(user?.id);
+  const publishedCount = (layouts ?? []).filter((l) => l.status === "published").length;
   const save = useSaveLayout(user?.id);
   const [device, setDevice] = useState<(typeof devices)[number]["key"]>("desktop");
 
@@ -74,6 +79,12 @@ function PreviewPage() {
   const width = devices.find((d) => d.key === device)!.width;
 
   async function togglePublish() {
+    if (!published && publishedCount >= plan.publishedLayouts) {
+      toast.error(
+        `The ${plan.name} plan allows ${formatLimit(plan.publishedLayouts)} published layouts. Upgrade in Billing to publish more.`,
+      );
+      return;
+    }
     await save.mutateAsync({
       id: layout!.id,
       values: { status: published ? "draft" : "published" },

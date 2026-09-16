@@ -59,6 +59,21 @@ export function useUpdateProfile(userId?: string) {
 
 /* ---------------- brand ---------------- */
 
+export function useBrands(userId?: string) {
+  return useQuery({
+    queryKey: ["brands", userId],
+    enabled: !!userId,
+    queryFn: async (): Promise<Brand[]> => {
+      const { data, error } = await supabase
+        .from("brands")
+        .select("*")
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      return (data ?? []) as Brand[];
+    },
+  });
+}
+
 export function useBrand(userId?: string) {
   return useQuery({
     queryKey: ["brand", userId],
@@ -78,13 +93,49 @@ export function useBrand(userId?: string) {
 export function useSaveBrand(userId?: string) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (values: Partial<Brand>) => {
-      const { error } = await supabase
+    mutationFn: async ({
+      id,
+      values,
+    }: {
+      id?: string;
+      values: Partial<Brand>;
+    }): Promise<Brand> => {
+      if (id) {
+        const { data, error } = await supabase
+          .from("brands")
+          .update(values as never)
+          .eq("id", id)
+          .select("*")
+          .single();
+        if (error) throw error;
+        return data as Brand;
+      }
+      const { data, error } = await supabase
         .from("brands")
-        .upsert({ user_id: userId!, ...values } as never, { onConflict: "user_id" });
+        .insert({ ...values, user_id: userId! } as never)
+        .select("*")
+        .single();
+      if (error) throw error;
+      return data as Brand;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["brands"] });
+      qc.invalidateQueries({ queryKey: ["brand"] });
+    },
+  });
+}
+
+export function useDeleteBrand() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("brands").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["brand"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["brands"] });
+      qc.invalidateQueries({ queryKey: ["brand"] });
+    },
   });
 }
 
