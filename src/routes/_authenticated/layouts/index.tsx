@@ -87,7 +87,7 @@ function LayoutsPage() {
         <EmptyState
           icon={LayoutGrid}
           title="Create your first testimonial widget"
-          description="Turn your testimonials into beautiful social proof for your website."
+          body="Turn your testimonials into beautiful social proof for your website."
           action={
             <Button asChild className="rounded-xl">
               <Link to="/layouts/new">
@@ -180,9 +180,8 @@ function LayoutsPage() {
         open={!!toDelete}
         onOpenChange={(open) => !open && setToDelete(null)}
         title="Delete layout?"
-        subtitle="Are you sure you want to delete this layout? Any website embedding it will stop showing testimonials. This action cannot be undone."
+        body="Are you sure you want to delete this layout? Any website embedding it will stop showing testimonials. This action cannot be undone."
         confirmLabel="Delete"
-        loading={remove.isPending}
         onConfirm={async () => {
           if (!toDelete) return;
           await remove.mutateAsync(toDelete.id);
