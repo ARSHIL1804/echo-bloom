@@ -109,14 +109,15 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
       const from = next.indexOf(dragId);
       const to = next.indexOf(targetId);
       if (from === -1 || to === -1) return s;
-      next.splice(to, 0, next.splice(from, 1)[0]);
+      const [moved] = next.splice(from, 1);
+      if (moved) next.splice(to, 0, moved);
       return next;
     });
     touch();
   }
 
   async function handleSave(mode: "draft" | "publish") {
-    if (!name.trim()) return toast.error("Give your layout a name");
+    if (!name.trim()) { toast.error("Give your layout a name"); return; }
     setSaving(mode);
     try {
       const result = await save.mutateAsync({

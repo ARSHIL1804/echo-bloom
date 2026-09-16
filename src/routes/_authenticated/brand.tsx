@@ -77,7 +77,7 @@ function BrandPage() {
   }
 
   async function submit() {
-    if (!values.name.trim()) return toast.error("Your brand needs a name");
+    if (!values.name.trim()) { toast.error("Your brand needs a name"); return; }
     try {
       await saveBrand.mutateAsync(values as never);
       toast.success("Brand saved successfully");

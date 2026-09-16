@@ -45,7 +45,7 @@ function SettingsPage() {
   }, [profile]);
 
   async function saveAccount() {
-    if (!name.trim()) return toast.error("Your name can't be empty");
+    if (!name.trim()) { toast.error("Your name can't be empty"); return; }
     try {
       await updateProfile.mutateAsync({
         name: name.trim(),
@@ -59,14 +59,14 @@ function SettingsPage() {
   }
 
   async function changePassword() {
-    if (newPassword.length < 8) return toast.error("Use at least 8 characters");
+    if (newPassword.length < 8) { toast.error("Use at least 8 characters"); return; }
     setChanging(true);
     const { error } = await supabase.auth.updateUser({
       password: newPassword,
       current_password: currentPassword,
     } as never);
     setChanging(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     setCurrentPassword("");
     setNewPassword("");
     toast.success("Password updated");
