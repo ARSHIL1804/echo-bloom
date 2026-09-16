@@ -9,7 +9,6 @@ import {
   Plus,
   Radio,
   Check,
-  ClipboardList,
   Trash2,
   CheckCircle2,
 } from "lucide-react";
