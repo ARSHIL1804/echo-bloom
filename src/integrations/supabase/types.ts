@@ -14,7 +14,174 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      brands: {
+        Row: {
+          background_color: string
+          body_font: string
+          created_at: string
+          description: string | null
+          font_family: string
+          heading_font: string
+          id: string
+          logo: string | null
+          name: string
+          primary_color: string
+          secondary_color: string
+          text_color: string
+          updated_at: string
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          background_color?: string
+          body_font?: string
+          created_at?: string
+          description?: string | null
+          font_family?: string
+          heading_font?: string
+          id?: string
+          logo?: string | null
+          name?: string
+          primary_color?: string
+          secondary_color?: string
+          text_color?: string
+          updated_at?: string
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          background_color?: string
+          body_font?: string
+          created_at?: string
+          description?: string | null
+          font_family?: string
+          heading_font?: string
+          id?: string
+          logo?: string | null
+          name?: string
+          primary_color?: string
+          secondary_color?: string
+          text_color?: string
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      layouts: {
+        Row: {
+          configuration: Json
+          created_at: string
+          id: string
+          name: string
+          public_slug: string
+          selected_testimonials: string[]
+          status: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          configuration?: Json
+          created_at?: string
+          id?: string
+          name: string
+          public_slug?: string
+          selected_testimonials?: string[]
+          status?: string
+          type?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          configuration?: Json
+          created_at?: string
+          id?: string
+          name?: string
+          public_slug?: string
+          selected_testimonials?: string[]
+          status?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          id: string
+          name?: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          company_logo: string | null
+          company_name: string | null
+          content: string
+          created_at: string
+          customer_avatar: string | null
+          customer_email: string | null
+          customer_name: string
+          id: string
+          job_title: string | null
+          rating: number
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company_logo?: string | null
+          company_name?: string | null
+          content: string
+          created_at?: string
+          customer_avatar?: string | null
+          customer_email?: string | null
+          customer_name: string
+          id?: string
+          job_title?: string | null
+          rating?: number
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company_logo?: string | null
+          company_name?: string | null
+          content?: string
+          created_at?: string
+          customer_avatar?: string | null
+          customer_email?: string | null
+          customer_name?: string
+          id?: string
+          job_title?: string | null
+          rating?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
