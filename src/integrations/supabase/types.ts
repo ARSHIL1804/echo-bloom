@@ -70,6 +70,7 @@ export type Database = {
       }
       layouts: {
         Row: {
+          brand_id: string | null
           configuration: Json
           created_at: string
           id: string
@@ -82,6 +83,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          brand_id?: string | null
           configuration?: Json
           created_at?: string
           id?: string
@@ -94,6 +96,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          brand_id?: string | null
           configuration?: Json
           created_at?: string
           id?: string
@@ -105,7 +108,15 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "layouts_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -131,6 +142,36 @@ export type Database = {
           id?: string
           name?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          current_period_end: string | null
+          paddle_customer_id: string | null
+          paddle_subscription_id: string | null
+          plan: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          current_period_end?: string | null
+          paddle_customer_id?: string | null
+          paddle_subscription_id?: string | null
+          plan?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          current_period_end?: string | null
+          paddle_customer_id?: string | null
+          paddle_subscription_id?: string | null
+          plan?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -187,7 +228,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_owner_plan: { Args: { _user_id: string }; Returns: string }
     }
     Enums: {
       [_ in never]: never
