@@ -11,10 +11,12 @@ import {
   useTestimonials,
   widgetUrl,
 } from "@/lib/data";
+import { formatLimit, usePlan } from "@/lib/plans";
 import { mergeConfig, type LayoutRecord, type LayoutType } from "@/lib/widget";
 import { EmptyState, PageHeader } from "@/components/dashboard/DashboardShell";
 import { StatusBadge } from "@/components/dashboard/bits";
 import { ConfirmDialog } from "@/components/dashboard/ConfirmDialog";
+import { UpgradeDialog } from "@/components/dashboard/UpgradeDialog";
 import { TestimonialWidget } from "@/components/widget/TestimonialWidget";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -42,11 +44,17 @@ function LayoutsPage() {
   const { user } = useAuth();
   const { data: layouts, isLoading } = useLayouts(user?.id);
   const { data: testimonials } = useTestimonials(user?.id);
+  const plan = usePlan(user?.id);
   const save = useSaveLayout(user?.id);
   const remove = useDeleteLayout();
   const [toDelete, setToDelete] = useState<LayoutRecord | null>(null);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
 
   async function duplicate(layout: LayoutRecord) {
+    if ((layouts?.length ?? 0) >= plan.layouts) {
+      setUpgradeOpen(true);
+      return;
+    }
     try {
       await save.mutateAsync({
         values: {
@@ -175,6 +183,13 @@ function LayoutsPage() {
           })}
         </div>
       )}
+
+      <UpgradeDialog
+        open={upgradeOpen}
+        onOpenChange={setUpgradeOpen}
+        currentPlan={plan.id}
+        reason={`The ${plan.name} plan is limited to ${formatLimit(plan.layouts)} layouts.`}
+      />
 
       <ConfirmDialog
         open={!!toDelete}
