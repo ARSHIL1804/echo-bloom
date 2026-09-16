@@ -74,6 +74,12 @@ function PreviewPage() {
   const width = devices.find((d) => d.key === device)!.width;
 
   async function togglePublish() {
+    if (!published && publishedCount >= plan.publishedLayouts) {
+      toast.error(
+        `The ${plan.name} plan allows ${formatLimit(plan.publishedLayouts)} published layouts. Upgrade in Billing to publish more.`,
+      );
+      return;
+    }
     await save.mutateAsync({
       id: layout!.id,
       values: { status: published ? "draft" : "published" },

@@ -14,7 +14,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
-import { copyToClipboard, useSaveLayout, useTestimonials, widgetUrl } from "@/lib/data";
+import { copyToClipboard, useLayouts, useSaveLayout, useTestimonials, widgetUrl } from "@/lib/data";
+import { formatLimit, usePlan } from "@/lib/plans";
 import {
   LAYOUT_TYPES,
   defaultConfig,
@@ -44,7 +45,10 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { data: testimonials } = useTestimonials(user?.id);
+  const { data: layouts } = useLayouts(user?.id);
+  const plan = usePlan(user?.id);
   const save = useSaveLayout(user?.id);
+  const publishedCount = (layouts ?? []).filter((l) => l.status === "published").length;
 
   const [name, setName] = useState(layout?.name ?? "My testimonial widget");
   const [type, setType] = useState<LayoutType>((layout?.type as LayoutType) ?? "grid");
@@ -118,6 +122,12 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
 
   async function handleSave(mode: "draft" | "publish") {
     if (!name.trim()) { toast.error("Give your layout a name"); return; }
+    if (mode === "publish" && layout?.status !== "published" && publishedCount >= plan.publishedLayouts) {
+      toast.error(
+        `The ${plan.name} plan allows ${formatLimit(plan.publishedLayouts)} published layouts. Upgrade in Billing to publish more.`,
+      );
+      return;
+    }
     setSaving(mode);
     try {
       const result = await save.mutateAsync({
