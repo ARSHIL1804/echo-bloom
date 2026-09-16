@@ -7,10 +7,12 @@ import {
   copyToClipboard,
   embedCode,
   useLayout,
+  useLayouts,
   useSaveLayout,
   useTestimonials,
   widgetUrl,
 } from "@/lib/data";
+import { formatLimit, usePlan } from "@/lib/plans";
 import { mergeConfig, type LayoutType } from "@/lib/widget";
 import { TestimonialWidget } from "@/components/widget/TestimonialWidget";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
@@ -48,6 +50,9 @@ function PreviewPage() {
   const { user } = useAuth();
   const { data: layout, isLoading } = useLayout(id);
   const { data: testimonials } = useTestimonials(user?.id);
+  const { data: layouts } = useLayouts(user?.id);
+  const plan = usePlan(user?.id);
+  const publishedCount = (layouts ?? []).filter((l) => l.status === "published").length;
   const save = useSaveLayout(user?.id);
   const [device, setDevice] = useState<(typeof devices)[number]["key"]>("desktop");
 
