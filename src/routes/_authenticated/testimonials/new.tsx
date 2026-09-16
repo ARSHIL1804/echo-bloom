@@ -10,6 +10,7 @@ import { UpgradeDialog } from "@/components/dashboard/UpgradeDialog";
 import {
   TestimonialForm,
   emptyValues,
+  toRecord,
 } from "@/components/dashboard/TestimonialForm";
 import { Button } from "@/components/ui/button";
 
@@ -74,7 +75,7 @@ function NewTestimonial() {
               return;
             }
             try {
-              await save.mutateAsync({ values });
+              await save.mutateAsync({ values: toRecord(values) });
               toast.success("Testimonial saved successfully");
               navigate({ to: "/testimonials" });
             } catch (error) {

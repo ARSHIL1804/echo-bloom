@@ -17,6 +17,8 @@ export type PlanLimits = {
   publishedLayouts: number;
   /** Max brands. Infinity = unlimited. */
   brands: number;
+  /** Max collection forms. Infinity = unlimited. */
+  forms: number;
   /** Free plan shows the "Powered by Testimonially" badge on public widgets. */
   removeBranding: boolean;
 };
@@ -31,6 +33,7 @@ export const PLANS: Record<PlanId, PlanLimits> = {
     layouts: Infinity,
     publishedLayouts: 2,
     brands: 1,
+    forms: 1,
     removeBranding: false,
   },
   starter: {
@@ -42,6 +45,7 @@ export const PLANS: Record<PlanId, PlanLimits> = {
     layouts: 10,
     publishedLayouts: 10,
     brands: 1,
+    forms: 3,
     removeBranding: true,
   },
   pro: {
@@ -53,6 +57,7 @@ export const PLANS: Record<PlanId, PlanLimits> = {
     layouts: Infinity,
     publishedLayouts: Infinity,
     brands: 3,
+    forms: Infinity,
     removeBranding: true,
   },
   agency: {
@@ -64,6 +69,7 @@ export const PLANS: Record<PlanId, PlanLimits> = {
     layouts: Infinity,
     publishedLayouts: Infinity,
     brands: 10,
+    forms: Infinity,
     removeBranding: true,
   },
 };

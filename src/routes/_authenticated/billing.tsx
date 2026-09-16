@@ -1,9 +1,16 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Check, CreditCard, LayoutGrid, MessageSquareQuote, Palette } from "lucide-react";
+import {
+  Check,
+  ClipboardList,
+  CreditCard,
+  LayoutGrid,
+  MessageSquareQuote,
+  Palette,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
-import { useBrands, useLayouts, useTestimonials } from "@/lib/data";
+import { useBrands, useForms, useLayouts, useTestimonials } from "@/lib/data";
 import {
   PLANS,
   PLAN_ORDER,
@@ -82,6 +89,7 @@ function BillingPage() {
   const { data: testimonials, isLoading: tLoading } = useTestimonials(user?.id);
   const { data: layouts, isLoading: lLoading } = useLayouts(user?.id);
   const { data: brands, isLoading: bLoading } = useBrands(user?.id);
+  const { data: forms, isLoading: fLoading } = useForms(user?.id);
   const [pending, setPending] = useState<PlanId | null>(null);
 
   const publishedCount = (layouts ?? []).filter((l) => l.status === "published").length;
@@ -125,7 +133,7 @@ function BillingPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <UsageMeter
           icon={MessageSquareQuote}
           label="Testimonials"
@@ -146,6 +154,13 @@ function BillingPage() {
           used={brands?.length ?? 0}
           limit={plan.brands}
           loading={bLoading}
+        />
+        <UsageMeter
+          icon={ClipboardList}
+          label="Live forms"
+          used={(forms ?? []).filter((f) => f.status === "live").length}
+          limit={plan.forms}
+          loading={fLoading}
         />
       </div>
 
@@ -176,6 +191,7 @@ function BillingPage() {
                     `${formatLimit(p.layouts)} layouts`,
                     `${formatLimit(p.publishedLayouts)} published layouts`,
                     `${formatLimit(p.brands)} brand${p.brands === 1 ? "" : "s"}`,
+                    `${formatLimit(p.forms)} collection form${p.forms === 1 ? "" : "s"}`,
                     p.removeBranding ? "Remove Testimonially branding" : "Testimonially branding",
                   ].map((f) => (
                     <li key={f} className="flex items-start gap-2 text-xs">

@@ -294,3 +294,124 @@ export function embedCode(slug: string) {
 export async function copyToClipboard(value: string) {
   await navigator.clipboard.writeText(value);
 }
+
+/* ---------------- forms ---------------- */
+
+export type FormFields = {
+  email: boolean;
+  emailRequired: boolean;
+  photo: boolean;
+  company: boolean;
+  companyRequired: boolean;
+  jobTitle: boolean;
+  rating: boolean;
+};
+
+export const defaultFormFields: FormFields = {
+  email: true,
+  emailRequired: false,
+  photo: false,
+  company: true,
+  companyRequired: false,
+  jobTitle: true,
+  rating: true,
+};
+
+export function mergeFormFields(value: unknown): FormFields {
+  const v = (value ?? {}) as Partial<FormFields>;
+  return { ...defaultFormFields, ...v };
+}
+
+export type CollectionForm = {
+  id: string;
+  user_id: string;
+  brand_id: string | null;
+  name: string;
+  slug: string;
+  headline: string;
+  intro: string;
+  thank_you: string;
+  fields: unknown;
+  auto_publish: boolean;
+  status: "draft" | "live" | string;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export function useForms(userId?: string) {
+  return useQuery({
+    queryKey: ["forms", userId],
+    enabled: !!userId,
+    queryFn: async (): Promise<CollectionForm[]> => {
+      const { data, error } = await supabase
+        .from("forms")
+        .select("*")
+        .order("updated_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as CollectionForm[];
+    },
+  });
+}
+
+export function useForm(id?: string) {
+  return useQuery({
+    queryKey: ["form", id],
+    enabled: !!id,
+    queryFn: async (): Promise<CollectionForm | null> => {
+      const { data, error } = await supabase.from("forms").select("*").eq("id", id!).maybeSingle();
+      if (error) throw error;
+      return data as CollectionForm | null;
+    },
+  });
+}
+
+export function useSaveForm(userId?: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      id,
+      values,
+    }: {
+      id?: string;
+      values: Partial<CollectionForm>;
+    }): Promise<CollectionForm> => {
+      if (id) {
+        const { data, error } = await supabase
+          .from("forms")
+          .update(values as never)
+          .eq("id", id)
+          .select("*")
+          .single();
+        if (error) throw error;
+        return data as CollectionForm;
+      }
+      const { data, error } = await supabase
+        .from("forms")
+        .insert({ ...values, user_id: userId! } as never)
+        .select("*")
+        .single();
+      if (error) throw error;
+      return data as CollectionForm;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["forms"] });
+      qc.invalidateQueries({ queryKey: ["form"] });
+    },
+  });
+}
+
+export function useDeleteForm() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("forms").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["forms"] }),
+  });
+}
+
+export function formUrl(slug: string) {
+  const origin = typeof window === "undefined" ? "" : window.location.origin;
+  return `${origin}/f/${slug}`;
+}
