@@ -165,18 +165,28 @@ export function TestimonialWidget({ type, config, testimonials, viewportWidth }:
     return base;
   }, [config.layout.columns, viewportWidth]);
 
+  const cycleLength = useMemo(() => {
+    if (type === "multicarousel") {
+      const perView = Math.max(1, Math.min(4, config.layout.columns));
+      const rows = Math.max(1, Math.min(3, config.carousel.rows));
+      return Math.max(1, Math.ceil(count / (perView * rows)));
+    }
+    return count;
+  }, [type, config.layout.columns, config.carousel.rows, count]);
+
   useEffect(() => {
-    if (type !== "carousel" || !config.carousel.autoplay || count < 2) return;
+    if ((type !== "carousel" && type !== "toast") || !config.carousel.autoplay || cycleLength < 2)
+      return;
     const id = setInterval(
-      () => setIndex((i) => (i + 1) % count),
+      () => setIndex((i) => (i + 1) % cycleLength),
       Math.max(1000, config.carousel.speed),
     );
     return () => clearInterval(id);
-  }, [type, config.carousel.autoplay, config.carousel.speed, count]);
+  }, [type, config.carousel.autoplay, config.carousel.speed, cycleLength]);
 
   useEffect(() => {
-    if (index > count - 1) setIndex(0);
-  }, [count, index]);
+    if (index > cycleLength - 1) setIndex(0);
+  }, [cycleLength, index]);
 
   const wrapperStyle: React.CSSProperties = {
     background: config.colors.background,
