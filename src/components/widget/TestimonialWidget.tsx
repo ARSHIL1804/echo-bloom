@@ -405,7 +405,7 @@ export function TestimonialWidget({
       content = (
         <div
           style={{
-            background: config.colors.card,
+            background: displayConfig.colors.card,
             border: `${displayConfig.card.borderWidth}px solid ${displayConfig.colors.border}`,
             borderRadius: displayConfig.card.radius,
             padding: displayConfig.card.padding * (compact ? 1.1 : 1.6),

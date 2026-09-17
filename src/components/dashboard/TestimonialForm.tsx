@@ -67,7 +67,7 @@ export function toFormValues(t: Testimonial): TestimonialFormValues {
 /** Convert form values into a database-ready record. */
 export function toRecord(values: TestimonialFormValues): Partial<Testimonial> {
   const { brand_id, ...rest } = values;
-  return { ...rest, brand_id: brand_id || null };
+  return { ...rest, source: normalizeSource(rest.source), brand_id: brand_id || null };
 }
 
 export function TestimonialForm({

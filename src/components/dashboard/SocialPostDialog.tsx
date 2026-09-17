@@ -3,7 +3,7 @@ import { Copy, Download, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import { useBrands } from "@/lib/data";
-import { formatLimit, usePlan } from "@/lib/plans";
+import { usePlan } from "@/lib/plans";
 import {
   SOCIAL_PRESETS,
   copyCanvasToClipboard,
