@@ -31,6 +31,9 @@ import { Progress } from "@/components/ui/progress";
 
 export const Route = createFileRoute("/_authenticated/billing")({
   component: BillingPage,
+  validateSearch: (search: Record<string, unknown>) => ({
+    checkout_id: typeof search["checkout_id"] === "string" ? search["checkout_id"] : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Billing — Testimonially" },
@@ -94,15 +97,49 @@ function BillingPage() {
   const { data: layouts, isLoading: lLoading } = useLayouts(user?.id);
   const { data: brands, isLoading: bLoading } = useBrands(user?.id);
   const { data: forms, isLoading: fLoading } = useForms(user?.id);
-  const [pending, setPending] = useState<PlanId | null>(null);
+  const { upgrade, pending: upgradePending } = useUpgrade();
+  const { openPortal, pending: portalPending } = useBillingPortal();
+  const { checkout_id } = Route.useSearch();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const confirm = useServerFn(confirmCheckout);
+  const confirmed = useRef(false);
 
   const publishedCount = (layouts ?? []).filter((l) => l.status === "published").length;
 
+  // Coming back from checkout: confirm the payment and refresh the plan.
+  useEffect(() => {
+    if (!checkout_id || confirmed.current) return;
+    confirmed.current = true;
+    confirm({ data: { checkoutId: checkout_id } })
+      .then((result) => {
+        if (result.plan === "pro") {
+          toast.success("Welcome to Pro!", { description: "Your plan is now active." });
+        } else if (result.status === "open" || result.status === "confirmed") {
+          toast.message("Payment is still processing", {
+            description: "Your plan will update as soon as it completes.",
+          });
+        } else {
+          toast.error("Payment wasn't completed", { description: "You're still on the Free plan." });
+        }
+        queryClient.invalidateQueries({ queryKey: ["subscription"] });
+      })
+      .catch(() => {
+        toast.error("We couldn't confirm your payment yet. Please refresh in a moment.");
+      })
+      .finally(() => {
+        navigate({ to: "/billing", search: {}, replace: true });
+      });
+  }, [checkout_id, confirm, navigate, queryClient]);
+
   function choose(id: PlanId) {
-    setPending(id);
-    openCheckout(id);
-    setPending(null);
+    if (id === "pro") {
+      void upgrade();
+      return;
+    }
+    void openPortal();
   }
+
 
   return (
     <div className="space-y-6">
