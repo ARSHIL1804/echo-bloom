@@ -84,7 +84,10 @@ export function useSubscription(userId?: string) {
         .eq("user_id", userId!)
         .maybeSingle();
       if (error) throw error;
-      if (data) return data as Subscription;
+      if (data) {
+        const row = data as { user_id: string; plan: string; status: string; current_period_end: string | null };
+        return { ...row, plan: normalizePlan(row.plan) };
+      }
       return { user_id: userId!, plan: "free", status: "active", current_period_end: null };
     },
   });
@@ -93,7 +96,7 @@ export function useSubscription(userId?: string) {
 /** Current plan limits for the signed-in user. Defaults to Free. */
 export function usePlan(userId?: string): PlanLimits {
   const { data } = useSubscription(userId);
-  return PLANS[data?.plan ?? "free"];
+  return PLANS[normalizePlan(data?.plan)];
 }
 
 export function formatLimit(n: number): string {
