@@ -31,6 +31,7 @@ import { Route as AuthenticatedTestimonialsIndexRouteImport } from './routes/_au
 import { Route as AuthenticatedTestimonialsIdRouteImport } from './routes/_authenticated/testimonials/$id'
 import { Route as AuthenticatedTestimonialsNewRouteImport } from './routes/_authenticated/testimonials/new'
 import { Route as ApiPublicCampaignUnsubscribeRouteImport } from './routes/api/public/campaign-unsubscribe'
+import { Route as ApiPublicPolarWebhookRouteImport } from './routes/api/public/polar-webhook'
 import { Route as ApiPublicSubmitTestimonialRouteImport } from './routes/api/public/submit-testimonial'
 import { Route as AuthenticatedLayoutsIdIndexRouteImport } from './routes/_authenticated/layouts/$id/index'
 import { Route as AuthenticatedLayoutsIdPreviewRouteImport } from './routes/_authenticated/layouts/$id/preview'
@@ -151,6 +152,11 @@ const ApiPublicCampaignUnsubscribeRoute =
     path: '/api/public/campaign-unsubscribe',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicPolarWebhookRoute = ApiPublicPolarWebhookRouteImport.update({
+  id: '/api/public/polar-webhook',
+  path: '/api/public/polar-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicSubmitTestimonialRoute =
   ApiPublicSubmitTestimonialRouteImport.update({
     id: '/api/public/submit-testimonial',
@@ -188,6 +194,7 @@ export interface FileRoutesByFullPath {
   '/testimonials/$id': typeof AuthenticatedTestimonialsIdRoute
   '/testimonials/new': typeof AuthenticatedTestimonialsNewRoute
   '/api/public/campaign-unsubscribe': typeof ApiPublicCampaignUnsubscribeRoute
+  '/api/public/polar-webhook': typeof ApiPublicPolarWebhookRoute
   '/api/public/submit-testimonial': typeof ApiPublicSubmitTestimonialRoute
   '/campaigns/': typeof AuthenticatedCampaignsIndexRoute
   '/forms/': typeof AuthenticatedFormsIndexRoute
@@ -214,6 +221,7 @@ export interface FileRoutesByTo {
   '/testimonials/$id': typeof AuthenticatedTestimonialsIdRoute
   '/testimonials/new': typeof AuthenticatedTestimonialsNewRoute
   '/api/public/campaign-unsubscribe': typeof ApiPublicCampaignUnsubscribeRoute
+  '/api/public/polar-webhook': typeof ApiPublicPolarWebhookRoute
   '/api/public/submit-testimonial': typeof ApiPublicSubmitTestimonialRoute
   '/campaigns': typeof AuthenticatedCampaignsIndexRoute
   '/forms': typeof AuthenticatedFormsIndexRoute
@@ -242,6 +250,7 @@ export interface FileRoutesById {
   '/_authenticated/testimonials/$id': typeof AuthenticatedTestimonialsIdRoute
   '/_authenticated/testimonials/new': typeof AuthenticatedTestimonialsNewRoute
   '/api/public/campaign-unsubscribe': typeof ApiPublicCampaignUnsubscribeRoute
+  '/api/public/polar-webhook': typeof ApiPublicPolarWebhookRoute
   '/api/public/submit-testimonial': typeof ApiPublicSubmitTestimonialRoute
   '/_authenticated/campaigns/': typeof AuthenticatedCampaignsIndexRoute
   '/_authenticated/forms/': typeof AuthenticatedFormsIndexRoute
@@ -270,6 +279,7 @@ export interface FileRouteTypes {
     | '/testimonials/$id'
     | '/testimonials/new'
     | '/api/public/campaign-unsubscribe'
+    | '/api/public/polar-webhook'
     | '/api/public/submit-testimonial'
     | '/campaigns/'
     | '/forms/'
@@ -296,6 +306,7 @@ export interface FileRouteTypes {
     | '/testimonials/$id'
     | '/testimonials/new'
     | '/api/public/campaign-unsubscribe'
+    | '/api/public/polar-webhook'
     | '/api/public/submit-testimonial'
     | '/campaigns'
     | '/forms'
@@ -323,6 +334,7 @@ export interface FileRouteTypes {
     | '/_authenticated/testimonials/$id'
     | '/_authenticated/testimonials/new'
     | '/api/public/campaign-unsubscribe'
+    | '/api/public/polar-webhook'
     | '/api/public/submit-testimonial'
     | '/_authenticated/campaigns/'
     | '/_authenticated/forms/'
@@ -341,6 +353,7 @@ export interface RootRouteChildren {
   FSlugRoute: typeof FSlugRoute
   WidgetSlugRoute: typeof WidgetSlugRoute
   ApiPublicCampaignUnsubscribeRoute: typeof ApiPublicCampaignUnsubscribeRoute
+  ApiPublicPolarWebhookRoute: typeof ApiPublicPolarWebhookRoute
   ApiPublicSubmitTestimonialRoute: typeof ApiPublicSubmitTestimonialRoute
 }
 
@@ -500,6 +513,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCampaignUnsubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/polar-webhook': {
+      id: '/api/public/polar-webhook'
+      path: '/api/public/polar-webhook'
+      fullPath: '/api/public/polar-webhook'
+      preLoaderRoute: typeof ApiPublicPolarWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/submit-testimonial': {
       id: '/api/public/submit-testimonial'
       path: '/api/public/submit-testimonial'
@@ -574,6 +594,7 @@ const rootRouteChildren: RootRouteChildren = {
   FSlugRoute: FSlugRoute,
   WidgetSlugRoute: WidgetSlugRoute,
   ApiPublicCampaignUnsubscribeRoute: ApiPublicCampaignUnsubscribeRoute,
+  ApiPublicPolarWebhookRoute: ApiPublicPolarWebhookRoute,
   ApiPublicSubmitTestimonialRoute: ApiPublicSubmitTestimonialRoute,
 }
 export const routeTree = rootRouteImport
