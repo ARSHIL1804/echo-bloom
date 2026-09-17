@@ -415,3 +415,12 @@ export function formUrl(slug: string) {
   const origin = typeof window === "undefined" ? "" : window.location.origin;
   return `${origin}/f/${slug}`;
 }
+
+/** Embeddable URL for a collection form (chrome trimmed for iframes). */
+export function formEmbedUrl(slug: string) {
+  return `${formUrl(slug)}?embed=1`;
+}
+
+export function formEmbedCode(slug: string) {
+  return `<iframe\n  src="${formEmbedUrl(slug)}"\n  width="100%"\n  height="760"\n  style="border:0;max-width:560px"\n  title="Share your experience">\n</iframe>`;
+}

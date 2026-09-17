@@ -395,6 +395,12 @@ function TestimonialsPage() {
           <p className="text-sm leading-relaxed">{preview?.content}</p>
         </DialogContent>
       </Dialog>
+
+      <SocialPostDialog
+        testimonial={postFor}
+        open={!!postFor}
+        onOpenChange={(open) => !open && setPostFor(null)}
+      />
     </div>
   );
 }
