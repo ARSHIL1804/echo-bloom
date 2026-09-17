@@ -172,9 +172,24 @@ function BillingPage() {
             </p>
           )}
         </div>
-        <div className="flex items-center gap-2 rounded-xl bg-success/10 px-4 py-2 text-sm font-medium text-success">
-          <span className="size-2 rounded-full bg-success" />
-          {subscription?.status === "active" || !subscription?.status ? "Active" : subscription.status}
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2 rounded-xl bg-success/10 px-4 py-2 text-sm font-medium text-success">
+            <span className="size-2 rounded-full bg-success" />
+            {subscription?.status === "active" || !subscription?.status
+              ? "Active"
+              : subscription.status}
+          </div>
+          {subscription?.plan === "pro" && (
+            <Button
+              variant="outline"
+              className="rounded-xl"
+              disabled={portalPending}
+              onClick={() => void openPortal()}
+            >
+              <ExternalLink className="size-4" />
+              {portalPending ? "Opening…" : "Manage billing"}
+            </Button>
+          )}
         </div>
       </div>
 
@@ -251,7 +266,7 @@ function BillingPage() {
                 <Button
                   className="mt-5 w-full rounded-xl"
                   variant={current ? "outline" : id === "pro" ? "default" : "outline"}
-                  disabled={current}
+                  disabled={current || upgradePending || portalPending}
                   onClick={() => choose(id)}
                 >
                   <CreditCard className="size-4" />
@@ -259,7 +274,9 @@ function BillingPage() {
                     ? "Current plan"
                     : isDowngrade
                       ? `Downgrade to ${p.name}`
-                      : `Upgrade to ${p.name}`}
+                      : upgradePending
+                        ? "Opening checkout…"
+                        : `Upgrade to ${p.name}`}
                 </Button>
               </div>
             );
