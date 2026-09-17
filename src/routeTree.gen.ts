@@ -21,6 +21,7 @@ import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticat
 import { Route as FSlugRouteImport } from './routes/f.$slug'
 import { Route as WidgetSlugRouteImport } from './routes/widget.$slug'
 import { Route as AuthenticatedCampaignsIndexRouteImport } from './routes/_authenticated/campaigns/index'
+import { Route as AuthenticatedCampaignsIdRouteImport } from './routes/_authenticated/campaigns/$id'
 import { Route as AuthenticatedFormsIndexRouteImport } from './routes/_authenticated/forms/index'
 import { Route as AuthenticatedFormsIdRouteImport } from './routes/_authenticated/forms/$id'
 import { Route as AuthenticatedFormsNewRouteImport } from './routes/_authenticated/forms/new'
@@ -92,6 +93,12 @@ const AuthenticatedCampaignsIndexRoute =
   AuthenticatedCampaignsIndexRouteImport.update({
     id: '/campaigns/',
     path: '/campaigns/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedCampaignsIdRoute =
+  AuthenticatedCampaignsIdRouteImport.update({
+    id: '/campaigns/$id',
+    path: '/campaigns/$id',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedFormsIndexRoute = AuthenticatedFormsIndexRouteImport.update({
@@ -174,6 +181,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/f/$slug': typeof FSlugRoute
   '/widget/$slug': typeof WidgetSlugRoute
+  '/campaigns/$id': typeof AuthenticatedCampaignsIdRoute
   '/forms/$id': typeof AuthenticatedFormsIdRoute
   '/forms/new': typeof AuthenticatedFormsNewRoute
   '/layouts/new': typeof AuthenticatedLayoutsNewRoute
@@ -199,6 +207,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsRoute
   '/f/$slug': typeof FSlugRoute
   '/widget/$slug': typeof WidgetSlugRoute
+  '/campaigns/$id': typeof AuthenticatedCampaignsIdRoute
   '/forms/$id': typeof AuthenticatedFormsIdRoute
   '/forms/new': typeof AuthenticatedFormsNewRoute
   '/layouts/new': typeof AuthenticatedLayoutsNewRoute
@@ -226,6 +235,7 @@ export interface FileRoutesById {
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/f/$slug': typeof FSlugRoute
   '/widget/$slug': typeof WidgetSlugRoute
+  '/_authenticated/campaigns/$id': typeof AuthenticatedCampaignsIdRoute
   '/_authenticated/forms/$id': typeof AuthenticatedFormsIdRoute
   '/_authenticated/forms/new': typeof AuthenticatedFormsNewRoute
   '/_authenticated/layouts/new': typeof AuthenticatedLayoutsNewRoute
@@ -253,6 +263,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/f/$slug'
     | '/widget/$slug'
+    | '/campaigns/$id'
     | '/forms/$id'
     | '/forms/new'
     | '/layouts/new'
@@ -278,6 +289,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/f/$slug'
     | '/widget/$slug'
+    | '/campaigns/$id'
     | '/forms/$id'
     | '/forms/new'
     | '/layouts/new'
@@ -304,6 +316,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings'
     | '/f/$slug'
     | '/widget/$slug'
+    | '/_authenticated/campaigns/$id'
     | '/_authenticated/forms/$id'
     | '/_authenticated/forms/new'
     | '/_authenticated/layouts/new'
@@ -417,6 +430,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCampaignsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/campaigns/$id': {
+      id: '/_authenticated/campaigns/$id'
+      path: '/campaigns/$id'
+      fullPath: '/campaigns/$id'
+      preLoaderRoute: typeof AuthenticatedCampaignsIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/forms/': {
       id: '/_authenticated/forms/'
       path: '/forms'
@@ -509,6 +529,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBrandRoute: typeof AuthenticatedBrandRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedCampaignsIdRoute: typeof AuthenticatedCampaignsIdRoute
   AuthenticatedFormsIdRoute: typeof AuthenticatedFormsIdRoute
   AuthenticatedFormsNewRoute: typeof AuthenticatedFormsNewRoute
   AuthenticatedLayoutsNewRoute: typeof AuthenticatedLayoutsNewRoute
@@ -527,6 +548,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBrandRoute: AuthenticatedBrandRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedCampaignsIdRoute: AuthenticatedCampaignsIdRoute,
   AuthenticatedFormsIdRoute: AuthenticatedFormsIdRoute,
   AuthenticatedFormsNewRoute: AuthenticatedFormsNewRoute,
   AuthenticatedLayoutsNewRoute: AuthenticatedLayoutsNewRoute,
