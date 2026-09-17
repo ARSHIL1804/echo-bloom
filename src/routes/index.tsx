@@ -141,6 +141,36 @@ const showcase = [
     name: "Compact List",
     body: "Simple testimonial list suitable for sidebars or product pages.",
   },
+  {
+    type: "wall",
+    tone: "teal",
+    name: "Wall of Love",
+    body: "A public wall page of all your best testimonials, with a branded header.",
+  },
+  {
+    type: "multicarousel",
+    tone: "lime",
+    name: "Multi-row Carousel",
+    body: "A carousel showing several rows of cards in every slide.",
+  },
+  {
+    type: "marquee",
+    tone: "indigo",
+    name: "Marquee",
+    body: "Endless auto-scrolling rows of testimonials — great for heroes.",
+  },
+  {
+    type: "badge",
+    tone: "sky",
+    name: "Rating Badge",
+    body: "A compact average-rating badge for footers, headers and pricing pages.",
+  },
+  {
+    type: "toast",
+    tone: "teal",
+    name: "Floating Toast",
+    body: "A small popup card in the corner that cycles through testimonials.",
+  },
 ] as const;
 
 const plans = [
@@ -436,7 +466,7 @@ function Landing() {
           <div className="max-w-2xl">
             <p className="text-sm font-semibold text-lime">Layouts</p>
             <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
-              Five ready-made widget styles
+              A widget style for every page
             </h2>
             <p className="mt-3 text-muted-foreground">
               Every layout is fully customizable and responsive out of the box.

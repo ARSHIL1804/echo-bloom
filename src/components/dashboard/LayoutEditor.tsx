@@ -653,10 +653,48 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
                 </AccordionContent>
               </AccordionItem>
 
-              {type === "carousel" && (
+              {(type === "wall") && (
+                <AccordionItem value="wall">
+                  <AccordionTrigger className="text-sm">Wall of Love</AccordionTrigger>
+                  <AccordionContent className="space-y-4">
+                    <SwitchField
+                      label="Show header"
+                      checked={config.wall.showHeader}
+                      onChange={(v) => update("wall", { showHeader: v })}
+                    />
+                    <div className="space-y-1.5">
+                      <Label htmlFor="wall-headline" className="text-xs text-muted-foreground">
+                        Headline
+                      </Label>
+                      <Input
+                        id="wall-headline"
+                        value={config.wall.headline}
+                        onChange={(e) => update("wall", { headline: e.target.value })}
+                        placeholder="Loved by customers"
+                      />
+                    </div>
+                    <SwitchField
+                      label="Show rating summary"
+                      checked={config.wall.showSummary}
+                      onChange={(v) => update("wall", { showSummary: v })}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+
+              {(type === "carousel" || type === "multicarousel") && (
                 <AccordionItem value="carousel">
                   <AccordionTrigger className="text-sm">Carousel</AccordionTrigger>
                   <AccordionContent className="space-y-4">
+                    {type === "multicarousel" && (
+                      <SliderField
+                        label="Rows"
+                        value={config.carousel.rows}
+                        min={1}
+                        max={3}
+                        onChange={(v) => update("carousel", { rows: v })}
+                      />
+                    )}
                     <SwitchField
                       label="Autoplay"
                       checked={config.carousel.autoplay}
@@ -680,6 +718,88 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
                       label="Show dots"
                       checked={config.carousel.dots}
                       onChange={(v) => update("carousel", { dots: v })}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+
+              {type === "marquee" && (
+                <AccordionItem value="marquee">
+                  <AccordionTrigger className="text-sm">Marquee</AccordionTrigger>
+                  <AccordionContent className="space-y-4">
+                    <SliderField
+                      label="Rows"
+                      value={config.marquee.rows}
+                      min={1}
+                      max={2}
+                      onChange={(v) => update("marquee", { rows: v })}
+                    />
+                    <SliderField
+                      label="Scroll duration"
+                      value={config.marquee.speed}
+                      min={10}
+                      max={120}
+                      step={5}
+                      suffix="s"
+                      onChange={(v) => update("marquee", { speed: v })}
+                    />
+                    <SwitchField
+                      label="Pause on hover"
+                      checked={config.marquee.pauseOnHover}
+                      onChange={(v) => update("marquee", { pauseOnHover: v })}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+
+              {type === "badge" && (
+                <AccordionItem value="badge">
+                  <AccordionTrigger className="text-sm">Badge</AccordionTrigger>
+                  <AccordionContent className="space-y-4">
+                    <SwitchField
+                      label="Show rating score"
+                      checked={config.badge.showLabel}
+                      onChange={(v) => update("badge", { showLabel: v })}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+
+              {type === "toast" && (
+                <AccordionItem value="toast">
+                  <AccordionTrigger className="text-sm">Floating toast</AccordionTrigger>
+                  <AccordionContent className="space-y-4">
+                    <OptionField
+                      label="Position"
+                      value={config.toast.position}
+                      options={[
+                        { value: "bottom-right", label: "Bottom right" },
+                        { value: "bottom-left", label: "Bottom left" },
+                        { value: "top-right", label: "Top right" },
+                        { value: "top-left", label: "Top left" },
+                      ]}
+                      onChange={(v) =>
+                        update("toast", { position: v as WidgetConfig["toast"]["position"] })
+                      }
+                    />
+                    <SwitchField
+                      label="Show avatar"
+                      checked={config.toast.showAvatar}
+                      onChange={(v) => update("toast", { showAvatar: v })}
+                    />
+                    <SwitchField
+                      label="Auto-rotate"
+                      checked={config.carousel.autoplay}
+                      onChange={(v) => update("carousel", { autoplay: v })}
+                    />
+                    <SliderField
+                      label="Rotation speed"
+                      value={config.carousel.speed}
+                      min={1000}
+                      max={10000}
+                      step={500}
+                      suffix="ms"
+                      onChange={(v) => update("carousel", { speed: v })}
                     />
                   </AccordionContent>
                 </AccordionItem>
@@ -778,6 +898,59 @@ function Thumbnail({ type, active }: { type: LayoutType; active: boolean }) {
         {Array.from({ length: 3 }).map((_, i) => (
           <span key={i} className={cn(bar, "flex-1")} />
         ))}
+      </div>
+    );
+  if (type === "wall")
+    return (
+      <div className="flex h-12 flex-col gap-1">
+        <span className={cn(bar, "h-2 w-2/3")} />
+        <div className="grid flex-1 grid-cols-2 gap-1">
+          <span className={bar} />
+          <span className={cn(bar, "row-span-2")} />
+          <span className={bar} />
+        </div>
+      </div>
+    );
+  if (type === "multicarousel")
+    return (
+      <div className="grid h-12 grid-cols-3 grid-rows-2 gap-1">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <span key={i} className={bar} />
+        ))}
+      </div>
+    );
+  if (type === "marquee")
+    return (
+      <div className="flex h-12 flex-col justify-center gap-1.5 overflow-hidden">
+        <div className="flex gap-1">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <span key={i} className={cn(bar, "h-4 w-6 shrink-0")} />
+          ))}
+        </div>
+        <div className="-ml-3 flex gap-1">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <span key={i} className={cn(bar, "h-4 w-6 shrink-0 opacity-70")} />
+          ))}
+        </div>
+      </div>
+    );
+  if (type === "badge")
+    return (
+      <div className="flex h-12 items-center justify-center gap-1.5">
+        <span className={cn(bar, "size-3 rounded-full")} />
+        <span className={cn(bar, "h-1.5 w-10")} />
+        <span className={cn(bar, "h-1.5 w-6")} />
+      </div>
+    );
+  if (type === "toast")
+    return (
+      <div className="relative h-12 overflow-hidden rounded-md bg-muted/40">
+        <span
+          className={cn(
+            "absolute bottom-1 right-1 h-6 w-10 rounded-sm",
+            active ? "bg-primary/60" : "bg-muted-foreground/25",
+          )}
+        />
       </div>
     );
   return (

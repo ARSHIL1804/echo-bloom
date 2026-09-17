@@ -1,4 +1,15 @@
-export type LayoutType = "grid" | "carousel" | "masonry" | "featured" | "list" | "minimal";
+export type LayoutType =
+  | "grid"
+  | "carousel"
+  | "masonry"
+  | "featured"
+  | "list"
+  | "minimal"
+  | "wall"
+  | "multicarousel"
+  | "marquee"
+  | "badge"
+  | "toast";
 
 export type Testimonial = {
   id: string;
@@ -65,6 +76,24 @@ export type WidgetConfig = {
     speed: number;
     arrows: boolean;
     dots: boolean;
+    rows: number;
+  };
+  wall: {
+    showHeader: boolean;
+    headline: string;
+    showSummary: boolean;
+  };
+  marquee: {
+    rows: number;
+    speed: number;
+    pauseOnHover: boolean;
+  };
+  badge: {
+    showLabel: boolean;
+  };
+  toast: {
+    position: "bottom-right" | "bottom-left" | "top-right" | "top-left";
+    showAvatar: boolean;
   };
 };
 
@@ -84,6 +113,19 @@ export const LAYOUT_TYPES: { type: LayoutType; name: string; description: string
   { type: "featured", name: "Featured", description: "One large highlighted testimonial." },
   { type: "list", name: "List", description: "Simple vertical testimonial list." },
   { type: "minimal", name: "Minimal", description: "Very minimal testimonial design." },
+  {
+    type: "wall",
+    name: "Wall of Love",
+    description: "A public wall page of your best testimonials.",
+  },
+  {
+    type: "multicarousel",
+    name: "Multi-row",
+    description: "Carousel showing several rows of cards per slide.",
+  },
+  { type: "marquee", name: "Marquee", description: "Endless auto-scrolling rows of testimonials." },
+  { type: "badge", name: "Badge", description: "Compact average-rating badge for footers." },
+  { type: "toast", name: "Floating toast", description: "Small popup card cycling testimonials." },
 ];
 
 export const defaultConfig: WidgetConfig = {
@@ -108,7 +150,11 @@ export const defaultConfig: WidgetConfig = {
   avatar: { show: true, size: 44, shape: "circle" },
   rating: { show: true, size: 16, position: "top" },
   layout: { columns: 3, gap: 20, maxWidth: 1100, align: "left", padding: 32 },
-  carousel: { autoplay: true, speed: 4000, arrows: true, dots: true },
+  carousel: { autoplay: true, speed: 4000, arrows: true, dots: true, rows: 2 },
+  wall: { showHeader: true, headline: "Loved by customers", showSummary: true },
+  marquee: { rows: 2, speed: 40, pauseOnHover: true },
+  badge: { showLabel: true },
+  toast: { position: "bottom-right", showAvatar: true },
 };
 
 export function mergeConfig(raw: unknown): WidgetConfig {
@@ -121,6 +167,10 @@ export function mergeConfig(raw: unknown): WidgetConfig {
     rating: { ...defaultConfig.rating, ...(value.rating ?? {}) },
     layout: { ...defaultConfig.layout, ...(value.layout ?? {}) },
     carousel: { ...defaultConfig.carousel, ...(value.carousel ?? {}) },
+    wall: { ...defaultConfig.wall, ...(value.wall ?? {}) },
+    marquee: { ...defaultConfig.marquee, ...(value.marquee ?? {}) },
+    badge: { ...defaultConfig.badge, ...(value.badge ?? {}) },
+    toast: { ...defaultConfig.toast, ...(value.toast ?? {}) },
   };
 }
 
