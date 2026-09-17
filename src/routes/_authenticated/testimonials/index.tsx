@@ -18,6 +18,7 @@ import { EmptyState, PageHeader } from "@/components/dashboard/DashboardShell";
 import { Rating, SkeletonRows, StatusBadge } from "@/components/dashboard/bits";
 import { ConfirmDialog } from "@/components/dashboard/ConfirmDialog";
 import { SocialPostDialog } from "@/components/dashboard/SocialPostDialog";
+import { SourceIcon, SourcePill, TESTIMONIAL_SOURCES, normalizeSource } from "@/lib/testimonial-sources";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -68,6 +69,7 @@ function TestimonialsPage() {
   const [status, setStatus] = useState("all");
   const [rating, setRating] = useState("all");
   const [brand, setBrand] = useState("all");
+  const [source, setSource] = useState("all");
   const [sort, setSort] = useState("newest");
   const [page, setPage] = useState(1);
   const [toDelete, setToDelete] = useState<string | null>(null);
@@ -88,6 +90,7 @@ function TestimonialsPage() {
     if (rating !== "all") rows = rows.filter((t) => t.rating === Number(rating));
     if (brand !== "all")
       rows = rows.filter((t) => (brand === "none" ? !t.brand_id : t.brand_id === brand));
+    if (source !== "all") rows = rows.filter((t) => normalizeSource(t.source) === source);
     rows.sort((a, b) => {
       if (sort === "rating") return b.rating - a.rating;
       if (sort === "name") return a.customer_name.localeCompare(b.customer_name);
@@ -96,7 +99,7 @@ function TestimonialsPage() {
       return sort === "oldest" ? at - bt : bt - at;
     });
     return rows;
-  }, [data, search, status, rating, brand, sort]);
+  }, [data, search, status, rating, brand, source, sort]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const current = Math.min(page, totalPages);
@@ -117,7 +120,7 @@ function TestimonialsPage() {
       />
 
       <div className="surface-card overflow-hidden">
-        <div className="grid gap-3 border-b p-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <div className="grid gap-3 border-b p-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
@@ -173,6 +176,28 @@ function TestimonialsPage() {
               ))}
             </SelectContent>
           </Select>
+          <Select
+            value={source}
+            onValueChange={(v) => {
+              setSource(v);
+              setPage(1);
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Source" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All sources</SelectItem>
+              {TESTIMONIAL_SOURCES.map((item) => (
+                <SelectItem key={item.id} value={item.id}>
+                  <span className="flex min-w-0 items-center gap-2">
+                    <SourceIcon source={item.id} size="sm" />
+                    <span className="truncate">{item.label}</span>
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Select value={sort} onValueChange={setSort}>
             <SelectTrigger>
               <SelectValue placeholder="Sort" />
@@ -218,6 +243,7 @@ function TestimonialsPage() {
                     <th className="px-5 py-3 font-medium">Testimonial</th>
                     <th className="px-5 py-3 font-medium">Company</th>
                     <th className="px-5 py-3 font-medium">Brand</th>
+                    <th className="px-5 py-3 font-medium">Source</th>
                     <th className="px-5 py-3 font-medium">Rating</th>
                     <th className="px-5 py-3 font-medium">Status</th>
                     <th className="px-5 py-3 font-medium">Created</th>
@@ -233,6 +259,9 @@ function TestimonialsPage() {
                       </td>
                       <td className="px-5 py-3.5 text-muted-foreground">{t.company_name || "—"}</td>
                       <td className="px-5 py-3.5 text-muted-foreground">{brandName(t.brand_id)}</td>
+                      <td className="px-5 py-3.5">
+                        <SourcePill source={t.source} />
+                      </td>
                       <td className="px-5 py-3.5">
                         <Rating value={t.rating} />
                       </td>
@@ -307,7 +336,7 @@ function TestimonialsPage() {
                   <p className="line-clamp-3 text-sm text-muted-foreground">{t.content}</p>
                   <div className="flex items-center justify-between">
                     <Rating value={t.rating} />
-                    <div className="flex gap-1">
+                    <div className="flex shrink-0 gap-1">
                       <Button
                         variant="ghost"
                         size="icon"
@@ -338,12 +367,12 @@ function TestimonialsPage() {
               ))}
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t px-5 py-4 text-sm">
+            <div className="grid gap-3 border-t px-5 py-4 text-sm sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
               <p className="text-muted-foreground">
                 Showing {(current - 1) * PAGE_SIZE + 1}–
                 {Math.min(current * PAGE_SIZE, filtered.length)} of {filtered.length}
               </p>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <Button
                   variant="outline"
                   size="sm"

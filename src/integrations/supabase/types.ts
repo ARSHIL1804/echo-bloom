@@ -245,6 +245,7 @@ export type Database = {
           id: string
           job_title: string | null
           rating: number
+          source: string
           status: string
           updated_at: string
           user_id: string
@@ -262,6 +263,7 @@ export type Database = {
           id?: string
           job_title?: string | null
           rating?: number
+          source?: string
           status?: string
           updated_at?: string
           user_id: string
@@ -279,6 +281,7 @@ export type Database = {
           id?: string
           job_title?: string | null
           rating?: number
+          source?: string
           status?: string
           updated_at?: string
           user_id?: string

@@ -1,3 +1,5 @@
+import type { TestimonialSourceId } from "./testimonial-sources";
+
 export type LayoutType =
   | "grid"
   | "carousel"
@@ -24,6 +26,7 @@ export type Testimonial = {
   job_title?: string | null;
   content: string;
   rating: number;
+  source?: TestimonialSourceId | string;
   status: "published" | "draft" | string;
   created_at?: string;
   updated_at?: string;
