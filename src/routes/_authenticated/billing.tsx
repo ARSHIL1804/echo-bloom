@@ -1,9 +1,12 @@
-import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useRef } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import {
   Check,
   ClipboardList,
   CreditCard,
+  ExternalLink,
   LayoutGrid,
   MessageSquareQuote,
   Palette,
@@ -11,11 +14,12 @@ import {
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import { useBrands, useForms, useLayouts, useTestimonials } from "@/lib/data";
+import { useBillingPortal, useUpgrade } from "@/lib/checkout";
+import { confirmCheckout } from "@/lib/polar.functions";
 import {
   PLANS,
   PLAN_ORDER,
   formatLimit,
-  openCheckout,
   usePlan,
   useSubscription,
   type PlanId,
