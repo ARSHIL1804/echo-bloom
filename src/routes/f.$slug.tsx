@@ -8,6 +8,9 @@ import { fontStack, initials } from "@/lib/widget";
 
 export const Route = createFileRoute("/f/$slug")({
   component: PublicForm,
+  validateSearch: (search: Record<string, unknown>) => ({
+    embed: search['embed'] === "1" || search['embed'] === 1 || search['embed'] === true,
+  }),
   head: () => ({
     meta: [
       { title: "Share your experience" },
@@ -38,6 +41,7 @@ type PublicFormRow = {
 
 function PublicForm() {
   const { slug } = Route.useParams();
+  const { embed } = Route.useSearch();
 
   const { data, isLoading } = useQuery({
     queryKey: ["public-form", slug],
