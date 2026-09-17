@@ -82,7 +82,8 @@ export const getPublicWidgetBySlug = createServerFn({ method: "GET" })
         const { data: rows, error: rowsError } = await supabaseAdmin
           .from("testimonials")
           .select("id, user_id, brand_id, form_id, customer_name, customer_avatar, company_name, company_logo, job_title, content, rating, status, source, created_at, updated_at")
-          .in("id", ids);
+          .in("id", ids)
+          .eq("status", "published");
         if (rowsError) throw rowsError;
         testimonials = (rows ?? []) as Testimonial[];
         testimonials.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));

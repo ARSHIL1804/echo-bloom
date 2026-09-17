@@ -21,6 +21,7 @@ export const Route = createFileRoute("/_authenticated/settings")({
       { property: "og:title", content: "Settings — Testimonially" },
       { property: "og:description", content: "Manage your account, password, and preferences." },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
 });

@@ -20,6 +20,7 @@ export const Route = createFileRoute("/reset-password")({
         content: "Choose a new password for your Testimonially account.",
       },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
 });

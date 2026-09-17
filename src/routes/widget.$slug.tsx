@@ -14,6 +14,7 @@ export const Route = createFileRoute("/widget/$slug")({
       { property: "og:title", content: "Testimonials" },
       { property: "og:description", content: "Customer testimonials widget." },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
 });

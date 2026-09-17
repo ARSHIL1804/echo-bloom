@@ -19,6 +19,7 @@ export const Route = createFileRoute("/f/$slug")({
       { property: "og:title", content: "Share your experience" },
       { property: "og:description", content: "Submit your testimonial." },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
 });

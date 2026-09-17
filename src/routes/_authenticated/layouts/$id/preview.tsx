@@ -41,6 +41,7 @@ export const Route = createFileRoute("/_authenticated/layouts/$id/preview")({
         content: "Preview your testimonial widget and copy its public URL or embed code.",
       },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
 });

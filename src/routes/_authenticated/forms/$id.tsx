@@ -12,6 +12,7 @@ export const Route = createFileRoute("/_authenticated/forms/$id")({
       { property: "og:title", content: "Edit collection form — Testimonially" },
       { property: "og:description", content: "Update your testimonial collection form." },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
 });

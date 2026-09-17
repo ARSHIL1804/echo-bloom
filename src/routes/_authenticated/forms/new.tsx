@@ -20,6 +20,7 @@ export const Route = createFileRoute("/_authenticated/forms/new")({
         content: "Build a shareable form that collects new testimonials.",
       },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
 });

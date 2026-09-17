@@ -12,6 +12,7 @@ export const Route = createFileRoute("/_authenticated/layouts/$id/")({
       { property: "og:title", content: "Edit layout — Testimonially" },
       { property: "og:description", content: "Customize your testimonial widget and publish it." },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
 });
