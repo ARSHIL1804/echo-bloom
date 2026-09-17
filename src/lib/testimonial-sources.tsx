@@ -26,8 +26,10 @@ type SourceMeta = {
   icon: string;
 };
 
+const TEXT_SOURCE: SourceMeta = { id: "text", label: "Text Testimonial", shortLabel: "Text", color: "#6366F1", icon: "T" };
+
 export const TESTIMONIAL_SOURCES: SourceMeta[] = [
-  { id: "text", label: "Text Testimonial", shortLabel: "Text", color: "#6366F1", icon: "T" },
+  TEXT_SOURCE,
   { id: "google", label: "Google", shortLabel: "Google", color: "#4285F4", icon: "G" },
   { id: "facebook", label: "Facebook", shortLabel: "Facebook", color: "#1877F2", icon: "f" },
   { id: "twitter", label: "Twitter", shortLabel: "Twitter", color: "#111827", icon: "𝕏" },
@@ -42,7 +44,7 @@ export const TESTIMONIAL_SOURCES: SourceMeta[] = [
   { id: "play-store", label: "Play Store", shortLabel: "Play Store", color: "#00A173", icon: "▶" },
 ];
 
-const fallbackSource = TESTIMONIAL_SOURCES[0];
+const fallbackSource = TEXT_SOURCE;
 
 export function normalizeSource(value: unknown): TestimonialSourceId {
   if (typeof value === "string" && TESTIMONIAL_SOURCE_IDS.includes(value as TestimonialSourceId)) {

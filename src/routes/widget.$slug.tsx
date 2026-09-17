@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { TestimonialWidget } from "@/components/widget/TestimonialWidget";
-import { getPublicWidgetBySlug } from "@/lib/public-lookups.functions";
+import { getPublicWidgetBySlug, type PublicWidgetLookup } from "@/lib/public-lookups.functions";
 import { mergeConfig } from "@/lib/widget";
 
 export const Route = createFileRoute("/widget/$slug")({
@@ -23,7 +23,7 @@ function PublicWidget() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["public-widget", slug],
-    queryFn: () => getPublicWidgetBySlug({ data: { slug } }),
+    queryFn: () => getPublicWidgetBySlug({ data: { slug } }) as Promise<PublicWidgetLookup | null>,
   });
 
   if (isLoading) {

@@ -29,7 +29,7 @@ function PublicForm() {
 
   const { data, isLoading } = useQuery({
     queryKey: ["public-form", slug],
-    queryFn: (): Promise<PublicFormLookup | null> => getPublicFormBySlug({ data: { slug } }),
+    queryFn: () => getPublicFormBySlug({ data: { slug } }) as Promise<PublicFormLookup | null>,
   });
 
   const [values, setValues] = useState({

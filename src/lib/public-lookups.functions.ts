@@ -2,13 +2,15 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import type { LayoutRecord, Testimonial } from "./widget";
 
+type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+
 export type PublicFormLookup = {
   id: string;
   name: string;
   headline: string;
   intro: string;
   thank_you: string;
-  fields: unknown;
+  fields: JsonValue;
   brand_name: string | null;
   brand_logo: string | null;
   primary_color: string | null;
@@ -52,10 +54,16 @@ export const getPublicFormBySlug = createServerFn({ method: "GET" })
     };
   });
 
+export type PublicWidgetLookup = {
+  layout: Omit<LayoutRecord, "configuration"> & { configuration: JsonValue };
+  testimonials: Testimonial[];
+  ownerPlan: string | null;
+};
+
 export const getPublicWidgetBySlug = createServerFn({ method: "GET" })
   .inputValidator((data) => z.object({ slug: z.string().min(3).max(120) }).parse(data))
   .handler(
-    async ({ data }): Promise<{ layout: LayoutRecord; testimonials: Testimonial[]; ownerPlan: string | null } | null> => {
+    async ({ data }): Promise<PublicWidgetLookup | null> => {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       const { data: layout, error: layoutError } = await supabaseAdmin
         .from("layouts")
@@ -67,7 +75,7 @@ export const getPublicWidgetBySlug = createServerFn({ method: "GET" })
       if (layoutError) throw layoutError;
       if (!layout) return null;
 
-      const record = layout as LayoutRecord;
+      const record = layout as PublicWidgetLookup["layout"];
       const ids = record.selected_testimonials ?? [];
       let testimonials: Testimonial[] = [];
       if (ids.length) {
