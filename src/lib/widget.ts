@@ -1,4 +1,15 @@
-export type LayoutType = "grid" | "carousel" | "masonry" | "featured" | "list" | "minimal";
+export type LayoutType =
+  | "grid"
+  | "carousel"
+  | "masonry"
+  | "featured"
+  | "list"
+  | "minimal"
+  | "wall"
+  | "multicarousel"
+  | "marquee"
+  | "badge"
+  | "toast";
 
 export type Testimonial = {
   id: string;
@@ -65,6 +76,24 @@ export type WidgetConfig = {
     speed: number;
     arrows: boolean;
     dots: boolean;
+    rows: number;
+  };
+  wall: {
+    showHeader: boolean;
+    headline: string;
+    showSummary: boolean;
+  };
+  marquee: {
+    rows: number;
+    speed: number;
+    pauseOnHover: boolean;
+  };
+  badge: {
+    showLabel: boolean;
+  };
+  toast: {
+    position: "bottom-right" | "bottom-left" | "top-right" | "top-left";
+    showAvatar: boolean;
   };
 };
 
