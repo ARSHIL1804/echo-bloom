@@ -113,6 +113,19 @@ export const LAYOUT_TYPES: { type: LayoutType; name: string; description: string
   { type: "featured", name: "Featured", description: "One large highlighted testimonial." },
   { type: "list", name: "List", description: "Simple vertical testimonial list." },
   { type: "minimal", name: "Minimal", description: "Very minimal testimonial design." },
+  {
+    type: "wall",
+    name: "Wall of Love",
+    description: "A public wall page of your best testimonials.",
+  },
+  {
+    type: "multicarousel",
+    name: "Multi-row",
+    description: "Carousel showing several rows of cards per slide.",
+  },
+  { type: "marquee", name: "Marquee", description: "Endless auto-scrolling rows of testimonials." },
+  { type: "badge", name: "Badge", description: "Compact average-rating badge for footers." },
+  { type: "toast", name: "Floating toast", description: "Small popup card cycling testimonials." },
 ];
 
 export const defaultConfig: WidgetConfig = {
