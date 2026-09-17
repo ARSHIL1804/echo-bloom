@@ -308,6 +308,14 @@ function TestimonialsPage() {
                   <div className="flex items-center justify-between">
                     <Rating value={t.rating} />
                     <div className="flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label="Create social post"
+                        onClick={() => setPostFor(t)}
+                      >
+                        <Share2 className="size-4" />
+                      </Button>
                       <Button variant="ghost" size="icon" onClick={() => setPreview(t)}>
                         <Eye className="size-4" />
                       </Button>
