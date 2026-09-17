@@ -23,7 +23,6 @@ import {
 import { PageHeader } from "@/components/dashboard/DashboardShell";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 
 export const Route = createFileRoute("/_authenticated/billing")({
@@ -66,7 +65,7 @@ function UsageMeter({
         </div>
         <p className="text-sm text-muted-foreground">
           {loading ? (
-            <Skeleton className="h-4 w-16" />
+            <span className="inline-block h-4 w-16 animate-pulse rounded-md bg-primary/10 align-middle" />
           ) : (
             <>
               <span className="font-semibold text-foreground">{used}</span>
@@ -112,7 +111,11 @@ function BillingPage() {
         <div>
           <p className="text-sm text-muted-foreground">Current plan</p>
           <p className="mt-1 font-display text-2xl font-bold">
-            {subLoading ? <Skeleton className="h-8 w-32" /> : plan.name}
+            {subLoading ? (
+              <span className="inline-block h-8 w-32 animate-pulse rounded-md bg-primary/10 align-middle" />
+            ) : (
+              plan.name
+            )}
             <span className="ml-2 text-base font-medium text-muted-foreground">
               {plan.price}/mo
             </span>
@@ -167,7 +170,7 @@ function BillingPage() {
 
       <div>
         <h2 className="font-display text-lg font-bold">Available plans</h2>
-        <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-4 grid max-w-3xl gap-4 md:grid-cols-2">
           {PLAN_ORDER.map((id) => {
             const p = PLANS[id];
             const current = id === subscription?.plan;
@@ -193,6 +196,9 @@ function BillingPage() {
                     `${formatLimit(p.publishedLayouts)} published layouts`,
                     `${formatLimit(p.brands)} brand${p.brands === 1 ? "" : "s"}`,
                     `${formatLimit(p.forms)} collection form${p.forms === 1 ? "" : "s"}`,
+                    p.campaignsPerMonth > 0
+                      ? `${p.campaignsPerMonth} campaigns monthly · ${p.emailsPerCampaign} emails each`
+                      : "No email campaigns",
                     p.removeBranding ? "Remove Testimonially branding" : "Testimonially branding",
                   ].map((f) => (
                     <li key={f} className="flex items-start gap-2 text-xs">

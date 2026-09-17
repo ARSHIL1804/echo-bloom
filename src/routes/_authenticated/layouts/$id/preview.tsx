@@ -158,6 +158,9 @@ function PreviewPage() {
                 config={mergeConfig(layout.configuration)}
                 testimonials={picked as never}
                 viewportWidth={width || undefined}
+                showBranding={
+                  plan.removeBranding ? mergeConfig(layout.configuration).branding.show : true
+                }
               />
             </div>
           </div>

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
-export type PlanId = "free" | "starter" | "pro" | "agency";
+export type PlanId = "free" | "pro";
 
 export type PlanLimits = {
   id: PlanId;
@@ -19,6 +19,10 @@ export type PlanLimits = {
   brands: number;
   /** Max collection forms. Infinity = unlimited. */
   forms: number;
+  /** Email campaigns allowed per calendar month. */
+  campaignsPerMonth: number;
+  /** Max recipients (emails) per campaign. */
+  emailsPerCampaign: number;
   /** Free plan shows the "Powered by Testimonially" badge on public widgets. */
   removeBranding: boolean;
 };
@@ -29,52 +33,38 @@ export const PLANS: Record<PlanId, PlanLimits> = {
     name: "Free",
     price: "$0",
     note: "For users trying the product",
-    testimonials: 20,
+    testimonials: 10,
     layouts: Infinity,
     publishedLayouts: 2,
     brands: 1,
     forms: 1,
+    campaignsPerMonth: 0,
+    emailsPerCampaign: 0,
     removeBranding: false,
-  },
-  starter: {
-    id: "starter",
-    name: "Starter",
-    price: "$9",
-    note: "For indie hackers, creators and small businesses",
-    testimonials: 100,
-    layouts: 10,
-    publishedLayouts: 10,
-    brands: 1,
-    forms: 3,
-    removeBranding: true,
   },
   pro: {
     id: "pro",
     name: "Pro",
-    price: "$19",
+    price: "$29",
     note: "For SaaS companies and growing businesses",
     testimonials: Infinity,
     layouts: Infinity,
     publishedLayouts: Infinity,
-    brands: 3,
+    brands: Infinity,
     forms: Infinity,
-    removeBranding: true,
-  },
-  agency: {
-    id: "agency",
-    name: "Agency",
-    price: "$49",
-    note: "For agencies managing testimonials for multiple clients",
-    testimonials: Infinity,
-    layouts: Infinity,
-    publishedLayouts: Infinity,
-    brands: 10,
-    forms: Infinity,
+    campaignsPerMonth: 3,
+    emailsPerCampaign: 500,
     removeBranding: true,
   },
 };
 
-export const PLAN_ORDER: PlanId[] = ["free", "starter", "pro", "agency"];
+export const PLAN_ORDER: PlanId[] = ["free", "pro"];
+
+/** Legacy plan values (starter/agency) map onto the current two tiers. */
+export function normalizePlan(value: string | null | undefined): PlanId {
+  if (value === "pro" || value === "starter" || value === "agency") return "pro";
+  return "free";
+}
 
 export type Subscription = {
   user_id: string;
@@ -94,7 +84,10 @@ export function useSubscription(userId?: string) {
         .eq("user_id", userId!)
         .maybeSingle();
       if (error) throw error;
-      if (data) return data as Subscription;
+      if (data) {
+        const row = data as { user_id: string; plan: string; status: string; current_period_end: string | null };
+        return { ...row, plan: normalizePlan(row.plan) };
+      }
       return { user_id: userId!, plan: "free", status: "active", current_period_end: null };
     },
   });
@@ -103,7 +96,7 @@ export function useSubscription(userId?: string) {
 /** Current plan limits for the signed-in user. Defaults to Free. */
 export function usePlan(userId?: string): PlanLimits {
   const { data } = useSubscription(userId);
-  return PLANS[data?.plan ?? "free"];
+  return PLANS[normalizePlan(data?.plan)];
 }
 
 export function formatLimit(n: number): string {

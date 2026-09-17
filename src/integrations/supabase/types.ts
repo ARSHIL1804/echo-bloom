@@ -68,6 +68,122 @@ export type Database = {
         }
         Relationships: []
       }
+      campaign_recipients: {
+        Row: {
+          campaign_id: string
+          created_at: string
+          email: string
+          error: string | null
+          id: string
+          name: string
+          reminded_at: string | null
+          responded_at: string | null
+          sent_at: string | null
+          status: string
+          token: string
+          user_id: string
+        }
+        Insert: {
+          campaign_id: string
+          created_at?: string
+          email: string
+          error?: string | null
+          id?: string
+          name?: string
+          reminded_at?: string | null
+          responded_at?: string | null
+          sent_at?: string | null
+          status?: string
+          token?: string
+          user_id: string
+        }
+        Update: {
+          campaign_id?: string
+          created_at?: string
+          email?: string
+          error?: string | null
+          id?: string
+          name?: string
+          reminded_at?: string | null
+          responded_at?: string | null
+          sent_at?: string | null
+          status?: string
+          token?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_recipients_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      campaigns: {
+        Row: {
+          brand_id: string | null
+          created_at: string
+          end_date: string | null
+          form_id: string | null
+          id: string
+          message: string
+          name: string
+          reminder_days: number
+          start_date: string
+          status: string
+          subject: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          brand_id?: string | null
+          created_at?: string
+          end_date?: string | null
+          form_id?: string | null
+          id?: string
+          message?: string
+          name?: string
+          reminder_days?: number
+          start_date?: string
+          status?: string
+          subject?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          brand_id?: string | null
+          created_at?: string
+          end_date?: string | null
+          form_id?: string | null
+          id?: string
+          message?: string
+          name?: string
+          reminder_days?: number
+          start_date?: string
+          status?: string
+          subject?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaigns_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campaigns_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       forms: {
         Row: {
           auto_publish: boolean
@@ -234,6 +350,7 @@ export type Database = {
       testimonials: {
         Row: {
           brand_id: string | null
+          campaign_id: string | null
           company_logo: string | null
           company_name: string | null
           content: string
@@ -252,6 +369,7 @@ export type Database = {
         }
         Insert: {
           brand_id?: string | null
+          campaign_id?: string | null
           company_logo?: string | null
           company_name?: string | null
           content: string
@@ -270,6 +388,7 @@ export type Database = {
         }
         Update: {
           brand_id?: string | null
+          campaign_id?: string | null
           company_logo?: string | null
           company_name?: string | null
           content?: string
@@ -292,6 +411,13 @@ export type Database = {
             columns: ["brand_id"]
             isOneToOne: false
             referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "testimonials_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
             referencedColumns: ["id"]
           },
           {

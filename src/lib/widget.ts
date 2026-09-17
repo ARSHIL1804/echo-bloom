@@ -98,6 +98,10 @@ export type WidgetConfig = {
     position: "bottom-right" | "bottom-left" | "top-right" | "top-left";
     showAvatar: boolean;
   };
+  branding: {
+    /** Show the "Powered by Testimonially" footer. Always on for Free plans. */
+    show: boolean;
+  };
 };
 
 export const FONT_OPTIONS = [
@@ -158,6 +162,7 @@ export const defaultConfig: WidgetConfig = {
   marquee: { rows: 2, speed: 40, pauseOnHover: true },
   badge: { showLabel: true },
   toast: { position: "bottom-right", showAvatar: true },
+  branding: { show: true },
 };
 
 export function mergeConfig(raw: unknown): WidgetConfig {
@@ -174,6 +179,7 @@ export function mergeConfig(raw: unknown): WidgetConfig {
     marquee: { ...defaultConfig.marquee, ...(value.marquee ?? {}) },
     badge: { ...defaultConfig.badge, ...(value.badge ?? {}) },
     toast: { ...defaultConfig.toast, ...(value.toast ?? {}) },
+    branding: { ...defaultConfig.branding, ...(value.branding ?? {}) },
   };
 }
 

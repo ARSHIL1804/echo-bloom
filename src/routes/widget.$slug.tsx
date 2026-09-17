@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { TestimonialWidget } from "@/components/widget/TestimonialWidget";
 import { getPublicWidgetBySlug, type PublicWidgetLookup } from "@/lib/public-lookups.functions";
 import { mergeConfig } from "@/lib/widget";
+import { PLANS, normalizePlan } from "@/lib/plans";
 
 export const Route = createFileRoute("/widget/$slug")({
   component: PublicWidget,
@@ -55,7 +56,8 @@ function PublicWidget() {
   }
 
   const config = mergeConfig(data.layout.configuration);
-  const showBadge = !data.ownerPlan || data.ownerPlan === "free";
+  const canRemoveBranding = PLANS[normalizePlan(data.ownerPlan)].removeBranding;
+  const showBadge = canRemoveBranding ? config.branding.show : true;
 
   return (
     <div style={{ minHeight: "100vh", background: config.colors.background }}>

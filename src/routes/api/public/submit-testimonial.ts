@@ -12,6 +12,8 @@ const payloadSchema = z.object({
   job_title: z.string().trim().max(160).optional().or(z.literal("")),
   rating: z.number().int().min(1).max(5).optional(),
   source: z.string().optional(),
+  /** Personal campaign link token, when the visitor came from a campaign email. */
+  recipient_token: z.string().trim().max(64).optional(),
   /** Honeypot — must stay empty. */
   website: z.string().max(0).optional().or(z.literal("")),
 });
@@ -75,10 +77,27 @@ export const Route = createFileRoute("/api/public/submit-testimonial")({
           return Response.json({ error: "This form is not available." }, { status: 404 });
         }
 
+        // Match the campaign recipient (if any) so the review is attributed and marked responded.
+        let campaignId: string | null = null;
+        let recipientId: string | null = null;
+        if (data.recipient_token) {
+          const { data: recipient } = await supabaseAdmin
+            .from("campaign_recipients")
+            .select("id, campaign_id, user_id")
+            .eq("token", data.recipient_token)
+            .maybeSingle();
+          const row = recipient as { id: string; campaign_id: string; user_id: string } | null;
+          if (row && row.user_id === form.user_id) {
+            campaignId = row.campaign_id;
+            recipientId = row.id;
+          }
+        }
+
         const { error: insertError } = await supabaseAdmin.from("testimonials").insert({
           user_id: form.user_id,
           brand_id: form.brand_id,
           form_id: form.id,
+          campaign_id: campaignId,
           customer_name: data.customer_name,
           customer_email: data.customer_email || null,
           customer_avatar: data.customer_avatar || null,
@@ -92,6 +111,13 @@ export const Route = createFileRoute("/api/public/submit-testimonial")({
 
         if (insertError) {
           return Response.json({ error: "Could not save your testimonial." }, { status: 500 });
+        }
+
+        if (recipientId) {
+          await supabaseAdmin
+            .from("campaign_recipients")
+            .update({ status: "responded", responded_at: new Date().toISOString() } as never)
+            .eq("id", recipientId);
         }
 
         return Response.json({ ok: true });

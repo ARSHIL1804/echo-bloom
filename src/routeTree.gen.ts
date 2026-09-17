@@ -20,6 +20,8 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as FSlugRouteImport } from './routes/f.$slug'
 import { Route as WidgetSlugRouteImport } from './routes/widget.$slug'
+import { Route as AuthenticatedCampaignsIndexRouteImport } from './routes/_authenticated/campaigns/index'
+import { Route as AuthenticatedCampaignsIdRouteImport } from './routes/_authenticated/campaigns/$id'
 import { Route as AuthenticatedFormsIndexRouteImport } from './routes/_authenticated/forms/index'
 import { Route as AuthenticatedFormsIdRouteImport } from './routes/_authenticated/forms/$id'
 import { Route as AuthenticatedFormsNewRouteImport } from './routes/_authenticated/forms/new'
@@ -28,6 +30,7 @@ import { Route as AuthenticatedLayoutsNewRouteImport } from './routes/_authentic
 import { Route as AuthenticatedTestimonialsIndexRouteImport } from './routes/_authenticated/testimonials/index'
 import { Route as AuthenticatedTestimonialsIdRouteImport } from './routes/_authenticated/testimonials/$id'
 import { Route as AuthenticatedTestimonialsNewRouteImport } from './routes/_authenticated/testimonials/new'
+import { Route as ApiPublicCampaignUnsubscribeRouteImport } from './routes/api/public/campaign-unsubscribe'
 import { Route as ApiPublicSubmitTestimonialRouteImport } from './routes/api/public/submit-testimonial'
 import { Route as AuthenticatedLayoutsIdIndexRouteImport } from './routes/_authenticated/layouts/$id/index'
 import { Route as AuthenticatedLayoutsIdPreviewRouteImport } from './routes/_authenticated/layouts/$id/preview'
@@ -86,6 +89,18 @@ const WidgetSlugRoute = WidgetSlugRouteImport.update({
   path: '/widget/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedCampaignsIndexRoute =
+  AuthenticatedCampaignsIndexRouteImport.update({
+    id: '/campaigns/',
+    path: '/campaigns/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedCampaignsIdRoute =
+  AuthenticatedCampaignsIdRouteImport.update({
+    id: '/campaigns/$id',
+    path: '/campaigns/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedFormsIndexRoute = AuthenticatedFormsIndexRouteImport.update({
   id: '/forms/',
   path: '/forms/',
@@ -130,6 +145,12 @@ const AuthenticatedTestimonialsNewRoute =
     path: '/testimonials/new',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicCampaignUnsubscribeRoute =
+  ApiPublicCampaignUnsubscribeRouteImport.update({
+    id: '/api/public/campaign-unsubscribe',
+    path: '/api/public/campaign-unsubscribe',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicSubmitTestimonialRoute =
   ApiPublicSubmitTestimonialRouteImport.update({
     id: '/api/public/submit-testimonial',
@@ -160,12 +181,15 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/f/$slug': typeof FSlugRoute
   '/widget/$slug': typeof WidgetSlugRoute
+  '/campaigns/$id': typeof AuthenticatedCampaignsIdRoute
   '/forms/$id': typeof AuthenticatedFormsIdRoute
   '/forms/new': typeof AuthenticatedFormsNewRoute
   '/layouts/new': typeof AuthenticatedLayoutsNewRoute
   '/testimonials/$id': typeof AuthenticatedTestimonialsIdRoute
   '/testimonials/new': typeof AuthenticatedTestimonialsNewRoute
+  '/api/public/campaign-unsubscribe': typeof ApiPublicCampaignUnsubscribeRoute
   '/api/public/submit-testimonial': typeof ApiPublicSubmitTestimonialRoute
+  '/campaigns/': typeof AuthenticatedCampaignsIndexRoute
   '/forms/': typeof AuthenticatedFormsIndexRoute
   '/layouts/': typeof AuthenticatedLayoutsIndexRoute
   '/testimonials/': typeof AuthenticatedTestimonialsIndexRoute
@@ -183,12 +207,15 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsRoute
   '/f/$slug': typeof FSlugRoute
   '/widget/$slug': typeof WidgetSlugRoute
+  '/campaigns/$id': typeof AuthenticatedCampaignsIdRoute
   '/forms/$id': typeof AuthenticatedFormsIdRoute
   '/forms/new': typeof AuthenticatedFormsNewRoute
   '/layouts/new': typeof AuthenticatedLayoutsNewRoute
   '/testimonials/$id': typeof AuthenticatedTestimonialsIdRoute
   '/testimonials/new': typeof AuthenticatedTestimonialsNewRoute
+  '/api/public/campaign-unsubscribe': typeof ApiPublicCampaignUnsubscribeRoute
   '/api/public/submit-testimonial': typeof ApiPublicSubmitTestimonialRoute
+  '/campaigns': typeof AuthenticatedCampaignsIndexRoute
   '/forms': typeof AuthenticatedFormsIndexRoute
   '/layouts': typeof AuthenticatedLayoutsIndexRoute
   '/testimonials': typeof AuthenticatedTestimonialsIndexRoute
@@ -208,12 +235,15 @@ export interface FileRoutesById {
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/f/$slug': typeof FSlugRoute
   '/widget/$slug': typeof WidgetSlugRoute
+  '/_authenticated/campaigns/$id': typeof AuthenticatedCampaignsIdRoute
   '/_authenticated/forms/$id': typeof AuthenticatedFormsIdRoute
   '/_authenticated/forms/new': typeof AuthenticatedFormsNewRoute
   '/_authenticated/layouts/new': typeof AuthenticatedLayoutsNewRoute
   '/_authenticated/testimonials/$id': typeof AuthenticatedTestimonialsIdRoute
   '/_authenticated/testimonials/new': typeof AuthenticatedTestimonialsNewRoute
+  '/api/public/campaign-unsubscribe': typeof ApiPublicCampaignUnsubscribeRoute
   '/api/public/submit-testimonial': typeof ApiPublicSubmitTestimonialRoute
+  '/_authenticated/campaigns/': typeof AuthenticatedCampaignsIndexRoute
   '/_authenticated/forms/': typeof AuthenticatedFormsIndexRoute
   '/_authenticated/layouts/': typeof AuthenticatedLayoutsIndexRoute
   '/_authenticated/testimonials/': typeof AuthenticatedTestimonialsIndexRoute
@@ -233,12 +263,15 @@ export interface FileRouteTypes {
     | '/settings'
     | '/f/$slug'
     | '/widget/$slug'
+    | '/campaigns/$id'
     | '/forms/$id'
     | '/forms/new'
     | '/layouts/new'
     | '/testimonials/$id'
     | '/testimonials/new'
+    | '/api/public/campaign-unsubscribe'
     | '/api/public/submit-testimonial'
+    | '/campaigns/'
     | '/forms/'
     | '/layouts/'
     | '/testimonials/'
@@ -256,12 +289,15 @@ export interface FileRouteTypes {
     | '/settings'
     | '/f/$slug'
     | '/widget/$slug'
+    | '/campaigns/$id'
     | '/forms/$id'
     | '/forms/new'
     | '/layouts/new'
     | '/testimonials/$id'
     | '/testimonials/new'
+    | '/api/public/campaign-unsubscribe'
     | '/api/public/submit-testimonial'
+    | '/campaigns'
     | '/forms'
     | '/layouts'
     | '/testimonials'
@@ -280,12 +316,15 @@ export interface FileRouteTypes {
     | '/_authenticated/settings'
     | '/f/$slug'
     | '/widget/$slug'
+    | '/_authenticated/campaigns/$id'
     | '/_authenticated/forms/$id'
     | '/_authenticated/forms/new'
     | '/_authenticated/layouts/new'
     | '/_authenticated/testimonials/$id'
     | '/_authenticated/testimonials/new'
+    | '/api/public/campaign-unsubscribe'
     | '/api/public/submit-testimonial'
+    | '/_authenticated/campaigns/'
     | '/_authenticated/forms/'
     | '/_authenticated/layouts/'
     | '/_authenticated/testimonials/'
@@ -301,6 +340,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   FSlugRoute: typeof FSlugRoute
   WidgetSlugRoute: typeof WidgetSlugRoute
+  ApiPublicCampaignUnsubscribeRoute: typeof ApiPublicCampaignUnsubscribeRoute
   ApiPublicSubmitTestimonialRoute: typeof ApiPublicSubmitTestimonialRoute
 }
 
@@ -383,6 +423,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WidgetSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/campaigns/': {
+      id: '/_authenticated/campaigns/'
+      path: '/campaigns'
+      fullPath: '/campaigns/'
+      preLoaderRoute: typeof AuthenticatedCampaignsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/campaigns/$id': {
+      id: '/_authenticated/campaigns/$id'
+      path: '/campaigns/$id'
+      fullPath: '/campaigns/$id'
+      preLoaderRoute: typeof AuthenticatedCampaignsIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/forms/': {
       id: '/_authenticated/forms/'
       path: '/forms'
@@ -439,6 +493,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTestimonialsNewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/campaign-unsubscribe': {
+      id: '/api/public/campaign-unsubscribe'
+      path: '/api/public/campaign-unsubscribe'
+      fullPath: '/api/public/campaign-unsubscribe'
+      preLoaderRoute: typeof ApiPublicCampaignUnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/submit-testimonial': {
       id: '/api/public/submit-testimonial'
       path: '/api/public/submit-testimonial'
@@ -468,11 +529,13 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBrandRoute: typeof AuthenticatedBrandRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedCampaignsIdRoute: typeof AuthenticatedCampaignsIdRoute
   AuthenticatedFormsIdRoute: typeof AuthenticatedFormsIdRoute
   AuthenticatedFormsNewRoute: typeof AuthenticatedFormsNewRoute
   AuthenticatedLayoutsNewRoute: typeof AuthenticatedLayoutsNewRoute
   AuthenticatedTestimonialsIdRoute: typeof AuthenticatedTestimonialsIdRoute
   AuthenticatedTestimonialsNewRoute: typeof AuthenticatedTestimonialsNewRoute
+  AuthenticatedCampaignsIndexRoute: typeof AuthenticatedCampaignsIndexRoute
   AuthenticatedFormsIndexRoute: typeof AuthenticatedFormsIndexRoute
   AuthenticatedLayoutsIndexRoute: typeof AuthenticatedLayoutsIndexRoute
   AuthenticatedTestimonialsIndexRoute: typeof AuthenticatedTestimonialsIndexRoute
@@ -485,11 +548,13 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBrandRoute: AuthenticatedBrandRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedCampaignsIdRoute: AuthenticatedCampaignsIdRoute,
   AuthenticatedFormsIdRoute: AuthenticatedFormsIdRoute,
   AuthenticatedFormsNewRoute: AuthenticatedFormsNewRoute,
   AuthenticatedLayoutsNewRoute: AuthenticatedLayoutsNewRoute,
   AuthenticatedTestimonialsIdRoute: AuthenticatedTestimonialsIdRoute,
   AuthenticatedTestimonialsNewRoute: AuthenticatedTestimonialsNewRoute,
+  AuthenticatedCampaignsIndexRoute: AuthenticatedCampaignsIndexRoute,
   AuthenticatedFormsIndexRoute: AuthenticatedFormsIndexRoute,
   AuthenticatedLayoutsIndexRoute: AuthenticatedLayoutsIndexRoute,
   AuthenticatedTestimonialsIndexRoute: AuthenticatedTestimonialsIndexRoute,
@@ -508,6 +573,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   FSlugRoute: FSlugRoute,
   WidgetSlugRoute: WidgetSlugRoute,
+  ApiPublicCampaignUnsubscribeRoute: ApiPublicCampaignUnsubscribeRoute,
   ApiPublicSubmitTestimonialRoute: ApiPublicSubmitTestimonialRoute,
 }
 export const routeTree = rootRouteImport

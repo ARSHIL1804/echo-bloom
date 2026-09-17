@@ -32,6 +32,7 @@ import {
   type WidgetConfig,
 } from "@/lib/widget";
 import { TestimonialWidget } from "@/components/widget/TestimonialWidget";
+import { UpgradeDialog } from "@/components/dashboard/UpgradeDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -84,6 +85,9 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
 
   const all = testimonials ?? [];
   const touch = () => setDirty(true);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
+  /** Free plans always show the badge; Pro can toggle it off. */
+  const brandingVisible = plan.removeBranding ? config.branding.show : true;
 
   function update<K extends keyof WidgetConfig>(section: K, values: Partial<WidgetConfig[K]>) {
     setConfig((c) => ({ ...c, [section]: { ...c[section], ...values } }));
@@ -804,6 +808,29 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
                   </AccordionContent>
                 </AccordionItem>
               )}
+              <AccordionItem value="branding">
+                <AccordionTrigger className="text-sm">Branding</AccordionTrigger>
+                <AccordionContent className="space-y-4">
+                  <SwitchField
+                    label="Show Testimonially branding"
+                    checked={brandingVisible}
+                    disabled={!plan.removeBranding}
+                    onChange={(v) => update("branding", { show: v })}
+                  />
+                  {!plan.removeBranding && (
+                    <div className="rounded-xl bg-primary-soft p-3 text-xs text-foreground">
+                      <p>Hiding the “Powered by Testimonially” badge is a Pro feature.</p>
+                      <Button
+                        size="sm"
+                        className="mt-2 rounded-lg"
+                        onClick={() => setUpgradeOpen(true)}
+                      >
+                        Upgrade to Pro
+                      </Button>
+                    </div>
+                  )}
+                </AccordionContent>
+              </AccordionItem>
             </Accordion>
 
             <Button
@@ -854,12 +881,19 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
                   config={config}
                   testimonials={previewTestimonials}
                   viewportWidth={deviceWidth || undefined}
+                  showBranding={brandingVisible}
                 />
               </div>
             </div>
           </div>
         </div>
       </div>
+      <UpgradeDialog
+        open={upgradeOpen}
+        onOpenChange={setUpgradeOpen}
+        currentPlan={plan.id}
+        reason="Removing Testimonially branding is included in Pro."
+      />
     </div>
   );
 }
