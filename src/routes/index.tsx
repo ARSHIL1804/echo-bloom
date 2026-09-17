@@ -503,7 +503,7 @@ function Landing() {
               Start free. Upgrade when your social proof does.
             </p>
           </div>
-          <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mx-auto mt-12 grid max-w-3xl gap-5 md:grid-cols-2">
             {plans.map((plan) => (
               <div
                 key={plan.name}
@@ -529,6 +529,15 @@ function Landing() {
                     <li key={f} className="flex items-start gap-2.5 text-sm">
                       <Check className="mt-0.5 size-4 shrink-0 text-success" />
                       <span>{f}</span>
+                    </li>
+                  ))}
+                  {plan.unavailable.map((f) => (
+                    <li
+                      key={f}
+                      className="flex items-start gap-2.5 text-sm text-muted-foreground/70"
+                    >
+                      <X className="mt-0.5 size-4 shrink-0" />
+                      <span className="line-through">{f}</span>
                     </li>
                   ))}
                 </ul>
