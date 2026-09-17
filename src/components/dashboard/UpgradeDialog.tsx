@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Check } from "lucide-react";
 import {
   Dialog,
@@ -9,7 +8,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { PLANS, PLAN_ORDER, formatLimit, openCheckout, type PlanId } from "@/lib/plans";
+import { PLANS, PLAN_ORDER, formatLimit, type PlanId } from "@/lib/plans";
+import { useUpgrade } from "@/lib/checkout";
 
 const keyFeatures: Record<PlanId, string[]> = {
   free: [
