@@ -32,6 +32,7 @@ import {
   type WidgetConfig,
 } from "@/lib/widget";
 import { TestimonialWidget } from "@/components/widget/TestimonialWidget";
+import { UpgradeDialog } from "@/components/dashboard/UpgradeDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -84,6 +85,9 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
 
   const all = testimonials ?? [];
   const touch = () => setDirty(true);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
+  /** Free plans always show the badge; Pro can toggle it off. */
+  const brandingVisible = plan.removeBranding ? config.branding.show : true;
 
   function update<K extends keyof WidgetConfig>(section: K, values: Partial<WidgetConfig[K]>) {
     setConfig((c) => ({ ...c, [section]: { ...c[section], ...values } }));
