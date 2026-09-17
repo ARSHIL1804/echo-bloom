@@ -150,7 +150,11 @@ export const defaultConfig: WidgetConfig = {
   avatar: { show: true, size: 44, shape: "circle" },
   rating: { show: true, size: 16, position: "top" },
   layout: { columns: 3, gap: 20, maxWidth: 1100, align: "left", padding: 32 },
-  carousel: { autoplay: true, speed: 4000, arrows: true, dots: true },
+  carousel: { autoplay: true, speed: 4000, arrows: true, dots: true, rows: 2 },
+  wall: { showHeader: true, headline: "Loved by customers", showSummary: true },
+  marquee: { rows: 2, speed: 40, pauseOnHover: true },
+  badge: { showLabel: true },
+  toast: { position: "bottom-right", showAvatar: true },
 };
 
 export function mergeConfig(raw: unknown): WidgetConfig {
@@ -163,6 +167,10 @@ export function mergeConfig(raw: unknown): WidgetConfig {
     rating: { ...defaultConfig.rating, ...(value.rating ?? {}) },
     layout: { ...defaultConfig.layout, ...(value.layout ?? {}) },
     carousel: { ...defaultConfig.carousel, ...(value.carousel ?? {}) },
+    wall: { ...defaultConfig.wall, ...(value.wall ?? {}) },
+    marquee: { ...defaultConfig.marquee, ...(value.marquee ?? {}) },
+    badge: { ...defaultConfig.badge, ...(value.badge ?? {}) },
+    toast: { ...defaultConfig.toast, ...(value.toast ?? {}) },
   };
 }
 
