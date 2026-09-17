@@ -42,6 +42,12 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-sky: var(--sky);
+  --color-sky-soft: var(--sky-soft);
+  --color-teal: var(--teal);
+  --color-teal-soft: var(--teal-soft);
+  --color-lime: var(--lime);
+  --color-lime-soft: var(--lime-soft);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -87,6 +93,13 @@
   --success: oklch(0.696 0.144 162.5);
   --success-foreground: oklch(1 0 0);
   --warning: oklch(0.795 0.16 78);
+  /* Landing accents — fresh & airy */
+  --sky: oklch(0.614 0.137 244); /* #0284C7 */
+  --sky-soft: oklch(0.951 0.026 237); /* #E0F2FE */
+  --teal: oklch(0.6 0.104 182); /* #0D9488 */
+  --teal-soft: oklch(0.95 0.051 181); /* #CCFBF1 */
+  --lime: oklch(0.648 0.17 132); /* #65A30D */
+  --lime-soft: oklch(0.967 0.071 122); /* #ECFCCB */
   /* #E5E7EB */
   --border: oklch(0.921 0.006 264.5);
   --input: oklch(0.921 0.006 264.5);
