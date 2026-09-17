@@ -397,6 +397,326 @@ export function TestimonialWidget({ type, config, testimonials, viewportWidth }:
     );
   }
 
+  const average = count
+    ? testimonials.reduce((sum, t) => sum + (t.rating || 0), 0) / count
+    : 0;
+
+  if (type === "wall") {
+    content = (
+      <div>
+        {config.wall.showHeader && (
+          <div
+            style={{
+              marginBottom: Math.max(24, config.layout.padding),
+              textAlign: config.layout.align === "center" ? "center" : "left",
+            }}
+          >
+            <h2
+              style={{
+                color: config.colors.text,
+                fontFamily: fontStack(config.typography.fontFamily),
+                fontSize: Math.max(24, config.typography.contentSize * 2.1),
+                fontWeight: 700,
+                lineHeight: 1.15,
+                margin: 0,
+              }}
+            >
+              {config.wall.headline}
+            </h2>
+            {config.wall.showSummary && config.rating.show && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  justifyContent: config.layout.align === "center" ? "center" : "flex-start",
+                  marginTop: 12,
+                }}
+              >
+                <Stars rating={Math.round(average)} config={config} />
+                <span style={{ color: config.colors.secondaryText, fontSize: 14 }}>
+                  {average.toFixed(1)} average from {count} review{count === 1 ? "" : "s"}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+        <div style={{ columnCount: columns, columnGap: config.layout.gap }}>
+          {testimonials.map((t) => (
+            <div key={t.id} style={{ breakInside: "avoid", marginBottom: config.layout.gap }}>
+              <Card t={t} config={config} />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  } else if (type === "multicarousel") {
+    const perView = Math.max(1, columns);
+    const rows = Math.max(1, Math.min(3, config.carousel.rows));
+    const perSlide = perView * rows;
+    const slides: Testimonial[][] = [];
+    for (let i = 0; i < count; i += perSlide) slides.push(testimonials.slice(i, i + perSlide));
+    const slideCount = slides.length;
+    const slideIndex = Math.min(index, slideCount - 1);
+    content = (
+      <div style={{ position: "relative" }}>
+        <div style={{ overflow: "hidden" }}>
+          <div
+            style={{
+              display: "flex",
+              gap: config.layout.gap,
+              transform: `translateX(calc(-${slideIndex} * (100% + ${config.layout.gap}px)))`,
+              transition: "transform .5s cubic-bezier(.22,.61,.36,1)",
+            }}
+          >
+            {slides.map((slide, si) => (
+              <div key={si} style={{ flex: "0 0 100%", minWidth: 0 }}>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: `repeat(${perView}, minmax(0, 1fr))`,
+                    gap: config.layout.gap,
+                  }}
+                >
+                  {slide.map((t) => (
+                    <Card key={t.id} t={t} config={config} />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        {config.carousel.arrows && slideCount > 1 && (
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 16 }}>
+            <button
+              type="button"
+              aria-label="Previous"
+              onClick={() => setIndex((i) => (i - 1 + slideCount) % slideCount)}
+              style={{
+                display: "grid",
+                placeItems: "center",
+                width: 36,
+                height: 36,
+                borderRadius: 9999,
+                background: config.colors.card,
+                border: `1px solid ${config.colors.border}`,
+                color: config.colors.text,
+              }}
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              type="button"
+              aria-label="Next"
+              onClick={() => setIndex((i) => (i + 1) % slideCount)}
+              style={{
+                display: "grid",
+                placeItems: "center",
+                width: 36,
+                height: 36,
+                borderRadius: 9999,
+                background: config.colors.card,
+                border: `1px solid ${config.colors.border}`,
+                color: config.colors.text,
+              }}
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        )}
+        {config.carousel.dots && slideCount > 1 && (
+          <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 16 }}>
+            {slides.map((_, si) => (
+              <button
+                key={si}
+                type="button"
+                aria-label={`Go to slide ${si + 1}`}
+                onClick={() => setIndex(si)}
+                style={{
+                  width: si === slideIndex ? 20 : 8,
+                  height: 8,
+                  borderRadius: 9999,
+                  background: si === slideIndex ? config.colors.accent : config.colors.border,
+                  transition: "all .2s ease",
+                }}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  } else if (type === "marquee") {
+    const rows = Math.max(1, Math.min(2, config.marquee.rows));
+    const duration = Math.max(10, config.marquee.speed);
+    const chunks: Testimonial[][] = [];
+    for (let i = 0; i < rows; i++) {
+      chunks.push(testimonials.filter((_, ti) => ti % rows === i));
+    }
+    content = (
+      <div>
+        <style>{`.testimonially-marquee-pause:hover .testimonially-marquee-track { animation-play-state: paused; } @keyframes testimonially-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }`}</style>
+        <div
+          className={config.marquee.pauseOnHover ? "testimonially-marquee-pause" : undefined}
+          style={{ display: "flex", flexDirection: "column", gap: config.layout.gap }}
+        >
+          {chunks.map((row, ri) => (
+            <div key={ri} style={{ overflow: "hidden" }}>
+              <div
+                className="testimonially-marquee-track"
+                style={{
+                  display: "flex",
+                  gap: config.layout.gap,
+                  width: "max-content",
+                  animation: `testimonially-marquee ${duration}s linear infinite`,
+                  animationDirection: ri % 2 === 1 ? "reverse" : "normal",
+                }}
+              >
+                {[...row, ...row].map((t, ci) => (
+                  <div key={`${t.id}-${ci}`} style={{ flex: "0 0 320px", maxWidth: 320 }}>
+                    <Card t={t} config={config} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  } else if (type === "badge") {
+    content = (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: config.layout.align === "center" ? "center" : "flex-start",
+        }}
+      >
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 10,
+            background: config.colors.card,
+            border: `${config.card.borderWidth}px solid ${config.colors.border}`,
+            borderRadius: 9999,
+            padding: "10px 18px",
+            boxShadow: shadowMap[config.card.shadow],
+          }}
+        >
+          {config.badge.showLabel && (
+            <span
+              style={{
+                color: config.colors.text,
+                fontWeight: 700,
+                fontSize: Math.max(13, config.typography.contentSize),
+              }}
+            >
+              {average.toFixed(1)} / 5
+            </span>
+          )}
+          <Stars rating={Math.round(average)} config={config} />
+          <span style={{ color: config.colors.secondaryText, fontSize: 13 }}>
+            {count} review{count === 1 ? "" : "s"}
+          </span>
+        </div>
+      </div>
+    );
+  } else if (type === "toast") {
+    const t = (testimonials[index] ?? testimonials[0])!;
+    const pos = config.toast.position;
+    const corner: React.CSSProperties =
+      pos === "bottom-right"
+        ? { right: 16, bottom: 16 }
+        : pos === "bottom-left"
+          ? { left: 16, bottom: 16 }
+          : pos === "top-right"
+            ? { right: 16, top: 16 }
+            : { left: 16, top: 16 };
+    content = (
+      <div style={{ position: "relative", minHeight: 300, width: "100%" }}>
+        <div
+          style={{
+            position: "absolute",
+            ...corner,
+            width: 340,
+            maxWidth: "calc(100% - 32px)",
+            background: config.colors.card,
+            border: `${config.card.borderWidth}px solid ${config.colors.border}`,
+            borderRadius: config.card.radius,
+            padding: 18,
+            boxShadow: shadowMap.lg,
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+            transition: "opacity .4s ease",
+          }}
+        >
+          <Stars rating={t.rating} config={config} />
+          <p
+            style={{
+              color: config.colors.text,
+              fontSize: config.typography.contentSize,
+              lineHeight: config.typography.lineHeight,
+              margin: 0,
+              display: "-webkit-box",
+              WebkitLineClamp: 4,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+          >
+            {t.content}
+          </p>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 2 }}>
+            {config.toast.showAvatar && config.avatar.show && (
+              <div
+                className="flex shrink-0 items-center justify-center overflow-hidden"
+                style={{
+                  width: config.avatar.size,
+                  height: config.avatar.size,
+                  borderRadius: avatarRadius(config.avatar.shape),
+                  background: `${config.colors.accent}1f`,
+                  color: config.colors.accent,
+                  fontWeight: 600,
+                  fontSize: Math.max(11, config.avatar.size / 3),
+                }}
+              >
+                {t.customer_avatar ? (
+                  <img
+                    src={t.customer_avatar}
+                    alt={t.customer_name}
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                ) : (
+                  initials(t.customer_name)
+                )}
+              </div>
+            )}
+            <div className="min-w-0">
+              <div
+                className="truncate"
+                style={{
+                  color: config.colors.text,
+                  fontSize: config.typography.nameSize,
+                  fontWeight: 600,
+                }}
+              >
+                {t.customer_name}
+              </div>
+              {(t.job_title || t.company_name) && (
+                <div
+                  className="truncate"
+                  style={{ color: config.colors.secondaryText, fontSize: config.typography.companySize }}
+                >
+                  {[t.job_title, t.company_name].filter(Boolean).join(" · ")}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={wrapperStyle}>
       <div style={innerStyle}>{content}</div>
