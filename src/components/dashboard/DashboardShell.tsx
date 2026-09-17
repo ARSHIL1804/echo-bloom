@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/lib/auth";
 import { useProfile } from "@/lib/data";
 import { cn } from "@/lib/utils";
@@ -85,13 +86,16 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             <p className="truncate text-xs text-muted-foreground">{user?.email}</p>
           </div>
         </div>
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-muted-foreground"
-          onClick={handleSignOut}
-        >
-          <LogOut className="size-4" /> Logout
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            className="flex-1 justify-start text-muted-foreground"
+            onClick={handleSignOut}
+          >
+            <LogOut className="size-4" /> Logout
+          </Button>
+          <ThemeToggle />
+        </div>
       </div>
     </div>
   );
