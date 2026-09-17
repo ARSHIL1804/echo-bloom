@@ -323,6 +323,9 @@ export type Database = {
           paddle_customer_id: string | null
           paddle_subscription_id: string | null
           plan: string
+          polar_customer_id: string | null
+          polar_product_id: string | null
+          polar_subscription_id: string | null
           status: string
           updated_at: string
           user_id: string
@@ -332,6 +335,9 @@ export type Database = {
           paddle_customer_id?: string | null
           paddle_subscription_id?: string | null
           plan?: string
+          polar_customer_id?: string | null
+          polar_product_id?: string | null
+          polar_subscription_id?: string | null
           status?: string
           updated_at?: string
           user_id: string
@@ -341,6 +347,9 @@ export type Database = {
           paddle_customer_id?: string | null
           paddle_subscription_id?: string | null
           plan?: string
+          polar_customer_id?: string | null
+          polar_product_id?: string | null
+          polar_subscription_id?: string | null
           status?: string
           updated_at?: string
           user_id?: string
