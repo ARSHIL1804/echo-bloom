@@ -43,7 +43,7 @@ export const getPublicFormBySlug = createServerFn({ method: "GET" })
       headline: form.headline,
       intro: form.intro,
       thank_you: form.thank_you,
-      fields: form.fields,
+      fields: form.fields as JsonValue,
       brand_name: brand?.name ?? null,
       brand_logo: brand?.logo ?? null,
       primary_color: brand?.primary_color ?? null,
