@@ -23,7 +23,6 @@ import {
 import { PageHeader } from "@/components/dashboard/DashboardShell";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 
 export const Route = createFileRoute("/_authenticated/billing")({
