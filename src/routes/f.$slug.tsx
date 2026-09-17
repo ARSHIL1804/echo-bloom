@@ -2,8 +2,8 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, Star } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { mergeFormFields } from "@/lib/data";
+import { getPublicFormBySlug, type PublicFormLookup } from "@/lib/public-lookups.functions";
 import { fontStack, initials } from "@/lib/widget";
 
 export const Route = createFileRoute("/f/$slug")({
@@ -23,34 +23,13 @@ export const Route = createFileRoute("/f/$slug")({
   }),
 });
 
-type PublicFormRow = {
-  id: string;
-  name: string;
-  headline: string;
-  intro: string;
-  thank_you: string;
-  fields: unknown;
-  brand_name: string | null;
-  brand_logo: string | null;
-  primary_color: string | null;
-  text_color: string | null;
-  background_color: string | null;
-  heading_font: string | null;
-  body_font: string | null;
-};
-
 function PublicForm() {
   const { slug } = Route.useParams();
   const { embed } = Route.useSearch();
 
   const { data, isLoading } = useQuery({
     queryKey: ["public-form", slug],
-    queryFn: async (): Promise<PublicFormRow | null> => {
-      const { data: rows, error } = await supabase.rpc("get_public_form", { _slug: slug });
-      if (error) throw error;
-      const list = (rows ?? []) as PublicFormRow[];
-      return list[0] ?? null;
-    },
+    queryFn: () => getPublicFormBySlug({ data: { slug } }) as Promise<PublicFormLookup | null>,
   });
 
   const [values, setValues] = useState({

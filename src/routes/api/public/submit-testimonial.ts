@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
+import { normalizeSource } from "@/lib/testimonial-sources";
 
 const payloadSchema = z.object({
   slug: z.string().min(3).max(120),
@@ -10,6 +11,7 @@ const payloadSchema = z.object({
   company_name: z.string().trim().max(160).optional().or(z.literal("")),
   job_title: z.string().trim().max(160).optional().or(z.literal("")),
   rating: z.number().int().min(1).max(5).optional(),
+  source: z.string().optional(),
   /** Honeypot — must stay empty. */
   website: z.string().max(0).optional().or(z.literal("")),
 });
@@ -84,6 +86,7 @@ export const Route = createFileRoute("/api/public/submit-testimonial")({
           job_title: data.job_title || null,
           content: data.content,
           rating: data.rating ?? 5,
+          source: normalizeSource(data.source),
           status: form.auto_publish ? "published" : "draft",
         } as never);
 

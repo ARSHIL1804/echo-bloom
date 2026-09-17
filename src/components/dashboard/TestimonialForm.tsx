@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { useAuth } from "@/lib/auth";
 import { useBrands } from "@/lib/data";
+import { SourceIcon, TESTIMONIAL_SOURCES, normalizeSource } from "@/lib/testimonial-sources";
 import type { Testimonial } from "@/lib/widget";
 
 export type TestimonialFormValues = {
@@ -28,6 +29,7 @@ export type TestimonialFormValues = {
   rating: number;
   status: "published" | "draft";
   brand_id: string;
+  source: string;
 };
 
 export function emptyValues(): TestimonialFormValues {
@@ -42,6 +44,7 @@ export function emptyValues(): TestimonialFormValues {
     rating: 5,
     status: "published",
     brand_id: "",
+    source: "text",
   };
 }
 
@@ -57,13 +60,14 @@ export function toFormValues(t: Testimonial): TestimonialFormValues {
     rating: t.rating ?? 5,
     status: (t.status === "published" ? "published" : "draft") as "published" | "draft",
     brand_id: t.brand_id ?? "",
+    source: normalizeSource(t.source),
   };
 }
 
 /** Convert form values into a database-ready record. */
 export function toRecord(values: TestimonialFormValues): Partial<Testimonial> {
   const { brand_id, ...rest } = values;
-  return { ...rest, brand_id: brand_id || null };
+  return { ...rest, source: normalizeSource(rest.source), brand_id: brand_id || null };
 }
 
 export function TestimonialForm({
@@ -181,6 +185,24 @@ export function TestimonialForm({
             <p className="text-xs text-muted-foreground">
               Used to filter testimonials when building widgets.
             </p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="source">Source</Label>
+            <Select value={values.source} onValueChange={(v) => set("source", normalizeSource(v))}>
+              <SelectTrigger id="source">
+                <SelectValue placeholder="Text Testimonial" />
+              </SelectTrigger>
+              <SelectContent>
+                {TESTIMONIAL_SOURCES.map((source) => (
+                  <SelectItem key={source.id} value={source.id}>
+                    <span className="flex min-w-0 items-center gap-2">
+                      <SourceIcon source={source.id} size="sm" />
+                      <span className="truncate">{source.label}</span>
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-2">
             <Label htmlFor="company_logo">Company logo URL</Label>
