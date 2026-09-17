@@ -100,7 +100,6 @@ function BillingPage() {
   const { upgrade, pending: upgradePending } = useUpgrade();
   const { openPortal, pending: portalPending } = useBillingPortal();
   const { checkout_id } = Route.useSearch();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const confirm = useServerFn(confirmCheckout);
   const confirmed = useRef(false);
