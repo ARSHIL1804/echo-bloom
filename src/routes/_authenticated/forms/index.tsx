@@ -152,6 +152,18 @@ function FormsPage() {
                   >
                     <Copy className="size-3.5" /> Copy link
                   </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-xl"
+                    disabled={!live}
+                    onClick={async () => {
+                      await copyToClipboard(formEmbedCode(f.slug));
+                      toast.success("Embed code copied");
+                    }}
+                  >
+                    <Code2 className="size-3.5" /> Embed
+                  </Button>
                   {live && (
                     <Button variant="ghost" size="sm" asChild className="rounded-xl">
                       <a href={`/f/${f.slug}`} target="_blank" rel="noreferrer">
