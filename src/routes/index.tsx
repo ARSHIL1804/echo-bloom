@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Footer } from "@/components/marketing/Footer";
 import { TestimonialWidget } from "@/components/widget/TestimonialWidget";
 import { demoTestimonials } from "@/lib/demo-data";
@@ -234,6 +235,7 @@ function Nav() {
           ))}
         </nav>
         <div className="hidden items-center gap-2 md:flex">
+          <ThemeToggle />
           <Button variant="ghost" asChild>
             <Link to="/login">Login</Link>
           </Button>
@@ -241,13 +243,16 @@ function Nav() {
             <Link to="/register">Get Started</Link>
           </Button>
         </div>
-        <button
-          className="grid size-10 place-items-center rounded-lg border md:hidden"
-          onClick={() => setOpen((v) => !v)}
-          aria-label="Toggle menu"
-        >
-          {open ? <X className="size-4" /> : <Menu className="size-4" />}
-        </button>
+        <div className="flex items-center gap-1 md:hidden">
+          <ThemeToggle />
+          <button
+            className="grid size-10 place-items-center rounded-lg border"
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Toggle menu"
+          >
+            {open ? <X className="size-4" /> : <Menu className="size-4" />}
+          </button>
+        </div>
       </div>
       {open && (
         <div className="border-t bg-card md:hidden">
