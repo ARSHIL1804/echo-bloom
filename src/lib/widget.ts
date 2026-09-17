@@ -98,6 +98,10 @@ export type WidgetConfig = {
     position: "bottom-right" | "bottom-left" | "top-right" | "top-left";
     showAvatar: boolean;
   };
+  branding: {
+    /** Show the "Powered by Testimonially" footer. Always on for Free plans. */
+    show: boolean;
+  };
 };
 
 export const FONT_OPTIONS = [
