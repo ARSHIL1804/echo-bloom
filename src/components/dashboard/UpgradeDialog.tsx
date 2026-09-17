@@ -12,24 +12,17 @@ import { cn } from "@/lib/utils";
 import { PLANS, PLAN_ORDER, formatLimit, openCheckout, type PlanId } from "@/lib/plans";
 
 const keyFeatures: Record<PlanId, string[]> = {
-  free: ["20 testimonials", "2 published layouts", "1 brand", "Testimonially branding"],
-  starter: [
-    "100 testimonials",
-    "10 layouts",
-    "Remove Testimonially branding",
-    "Email support",
+  free: [
+    "10 testimonials",
+    "2 published layouts",
+    "1 brand · 1 collection form",
+    "Testimonially branding shown",
   ],
   pro: [
     "Unlimited testimonials & layouts",
-    "3 brands",
-    "Custom domain",
-    "Remove branding",
-  ],
-  agency: [
-    "Unlimited testimonials & layouts",
-    "10 brands",
-    "White-label + API",
-    "Team members",
+    "Unlimited brands & collection forms",
+    "3 campaigns monthly, 500 emails each",
+    "Remove Testimonially branding",
   ],
 };
 
