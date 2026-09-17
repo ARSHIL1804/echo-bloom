@@ -888,6 +888,12 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
           </div>
         </div>
       </div>
+      <UpgradeDialog
+        open={upgradeOpen}
+        onOpenChange={setUpgradeOpen}
+        currentPlan={plan.id}
+        reason="Removing Testimonially branding is included in Pro."
+      />
     </div>
   );
 }
