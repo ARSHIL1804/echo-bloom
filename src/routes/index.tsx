@@ -46,60 +46,98 @@ export const Route = createFileRoute("/")({
   }),
 });
 
-const features = [
+type AccentTone = "sky" | "teal" | "lime" | "indigo";
+
+const toneClass: Record<AccentTone, string> = {
+  sky: "bg-sky-soft text-sky",
+  teal: "bg-teal-soft text-teal",
+  lime: "bg-lime-soft text-lime",
+  indigo: "bg-primary-soft text-primary",
+};
+
+const features: {
+  icon: React.ComponentType<{ className?: string }>;
+  tone: AccentTone;
+  title: string;
+  body: string;
+}[] = [
   {
     icon: MessageSquareQuote,
+    tone: "sky",
     title: "Collect Testimonials",
     body: "Add and manage customer testimonials from one centralized dashboard.",
   },
   {
     icon: LayoutGrid,
+    tone: "teal",
     title: "Beautiful Layouts",
     body: "Choose from multiple professionally designed testimonial layouts.",
   },
   {
     icon: Palette,
+    tone: "lime",
     title: "Full Customization",
     body: "Customize colors, fonts, typography, spacing, borders, and other visual properties.",
   },
   {
     icon: Globe,
+    tone: "indigo",
     title: "Instant Publishing",
     body: "Every layout gets its own public URL that can be used directly on a website.",
   },
   {
     icon: Sparkles,
+    tone: "sky",
     title: "Multiple Layouts",
     body: "Create different testimonial widgets for different websites, pages, or campaigns.",
   },
   {
     icon: Settings2,
+    tone: "teal",
     title: "Simple Management",
     body: "Edit, delete, reorder, and control which testimonials appear in each layout.",
   },
 ];
 
 const steps = [
-  { n: "01", title: "Add testimonials", body: "Add your customer feedback and social proof." },
-  { n: "02", title: "Design your widget", body: "Select a layout and customize its appearance." },
+  {
+    n: "01",
+    tone: "sky",
+    title: "Add testimonials",
+    body: "Add your customer feedback and social proof.",
+  },
+  {
+    n: "02",
+    tone: "teal",
+    title: "Design your widget",
+    body: "Select a layout and customize its appearance.",
+  },
   {
     n: "03",
+    tone: "lime",
     title: "Publish anywhere",
     body: "Copy your public URL and use the testimonial widget on your website.",
   },
-];
+] as const;
 
 const showcase = [
-  { type: "grid", name: "Grid", body: "Multiple testimonial cards displayed in a responsive grid." },
+  { type: "grid", tone: "sky", name: "Grid", body: "Multiple testimonial cards displayed in a responsive grid." },
   {
     type: "carousel",
+    tone: "teal",
     name: "Carousel",
     body: "Testimonials displayed inside a horizontally scrolling carousel.",
   },
-  { type: "featured", name: "Single Featured", body: "One large highlighted testimonial." },
-  { type: "masonry", name: "Masonry", body: "Pinterest-style testimonial layout." },
+  {
+    type: "featured",
+    tone: "lime",
+    name: "Single Featured",
+    body: "One large highlighted testimonial.",
+  },
+  { type: "masonry", tone: "indigo", name: "Masonry", body: "Pinterest-style testimonial layout." },
   {
     type: "minimal",
+    tone: "sky",
     name: "Compact List",
     body: "Simple testimonial list suitable for sidebars or product pages.",
   },
@@ -266,11 +304,12 @@ function Landing() {
 
       {/* Hero */}
       <section className="relative overflow-hidden border-b">
-        <div className="pointer-events-none absolute -top-40 left-1/2 size-[42rem] -translate-x-1/2 rounded-full bg-primary-soft blur-3xl" />
+        <div className="pointer-events-none absolute -top-40 left-1/3 size-[38rem] -translate-x-1/2 rounded-full bg-sky-soft blur-3xl" />
+        <div className="pointer-events-none absolute -top-24 left-2/3 size-[30rem] -translate-x-1/2 rounded-full bg-primary-soft blur-3xl" />
         <div className="container-page relative grid items-center gap-14 py-16 lg:grid-cols-2 lg:py-24">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground">
-              <Sparkles className="size-3.5 text-primary" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-transparent bg-sky-soft px-3 py-1.5 text-xs font-medium text-sky">
+              <Sparkles className="size-3.5" />
               Collect testimonials. Build trust. Convert more.
             </span>
             <h1 className="mt-6 font-display text-4xl font-extrabold leading-[1.05] text-foreground sm:text-5xl lg:text-6xl">
@@ -341,7 +380,7 @@ function Landing() {
       <section id="features" className="border-b py-20">
         <div className="container-page">
           <div className="max-w-2xl">
-            <p className="text-sm font-semibold text-primary">Features</p>
+            <p className="text-sm font-semibold text-sky">Features</p>
             <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
               Everything you need to ship social proof
             </h2>
@@ -352,7 +391,9 @@ function Landing() {
                 key={f.title}
                 className="surface-card p-6 transition-all hover:-translate-y-0.5 hover:shadow-lift"
               >
-                <div className="grid size-10 place-items-center rounded-xl bg-primary-soft text-primary">
+                <div
+                  className={`grid size-10 place-items-center rounded-xl ${toneClass[f.tone]}`}
+                >
                   <f.icon className="size-5" />
                 </div>
                 <h3 className="mt-5 text-base font-semibold">{f.title}</h3>
@@ -367,7 +408,7 @@ function Landing() {
       <section id="how-it-works" className="border-b bg-card py-20">
         <div className="container-page">
           <div className="max-w-2xl">
-            <p className="text-sm font-semibold text-primary">How it works</p>
+            <p className="text-sm font-semibold text-teal">How it works</p>
             <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
               From feedback to live widget in minutes
             </h2>
@@ -376,7 +417,9 @@ function Landing() {
             <div className="absolute left-0 right-0 top-12 hidden border-t border-dashed md:block" />
             {steps.map((s) => (
               <div key={s.n} className="relative rounded-xl border bg-background p-6">
-                <span className="grid size-10 place-items-center rounded-xl bg-foreground font-display text-sm font-bold text-background">
+                <span
+                  className={`grid size-10 place-items-center rounded-xl font-display text-sm font-bold ${toneClass[s.tone]}`}
+                >
                   {s.n}
                 </span>
                 <h3 className="mt-5 text-base font-semibold">{s.title}</h3>
@@ -391,7 +434,7 @@ function Landing() {
       <section id="showcase" className="border-b py-20">
         <div className="container-page">
           <div className="max-w-2xl">
-            <p className="text-sm font-semibold text-primary">Layouts</p>
+            <p className="text-sm font-semibold text-lime">Layouts</p>
             <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
               Five ready-made widget styles
             </h2>
@@ -407,7 +450,9 @@ function Landing() {
                     <h3 className="text-sm font-semibold">{s.name}</h3>
                     <p className="text-xs text-muted-foreground">{s.body}</p>
                   </div>
-                  <span className="rounded-full bg-primary-soft px-2.5 py-1 text-xs font-medium text-primary">
+                  <span
+                    className={`rounded-full px-2.5 py-1 text-xs font-medium ${toneClass[s.tone]}`}
+                  >
                     {s.type}
                   </span>
                 </div>
@@ -516,19 +561,29 @@ function Landing() {
       {/* CTA */}
       <section className="py-20">
         <div className="container-page">
-          <div className="rounded-3xl bg-foreground px-8 py-14 text-center">
-            <Rocket className="mx-auto size-8 text-background" />
-            <h2 className="mt-6 font-display text-3xl font-bold text-background sm:text-4xl">
-              Start building trust today
-            </h2>
-            <p className="mx-auto mt-4 max-w-lg text-background/70">
-              Create your first testimonial widget in under five minutes.
-            </p>
-            <Button size="lg" variant="secondary" asChild className="mt-8 rounded-xl">
-              <Link to="/register">
-                Get Started Free <ArrowRight className="size-4" />
-              </Link>
-            </Button>
+          <div className="relative overflow-hidden rounded-3xl bg-foreground px-8 py-14 text-center">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(55% 70% at 50% 0%, color-mix(in oklab, var(--sky) 28%, transparent), transparent 70%), radial-gradient(45% 60% at 85% 100%, color-mix(in oklab, var(--teal) 22%, transparent), transparent 70%)",
+              }}
+            />
+            <div className="relative">
+              <Rocket className="mx-auto size-8 text-background" />
+              <h2 className="mt-6 font-display text-3xl font-bold text-background sm:text-4xl">
+                Start building trust today
+              </h2>
+              <p className="mx-auto mt-4 max-w-lg text-background/70">
+                Create your first testimonial widget in under five minutes.
+              </p>
+              <Button size="lg" variant="secondary" asChild className="mt-8 rounded-xl">
+                <Link to="/register">
+                  Get Started Free <ArrowRight className="size-4" />
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>
