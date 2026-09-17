@@ -128,7 +128,7 @@ function BillingPage() {
         toast.error("We couldn't confirm your payment yet. Please refresh in a moment.");
       })
       .finally(() => {
-        navigate({ to: "/billing", search: { checkout_id: undefined }, replace: true });
+        window.history.replaceState(null, "", "/billing");
       });
   }, [checkout_id, confirm, navigate, queryClient]);
 
