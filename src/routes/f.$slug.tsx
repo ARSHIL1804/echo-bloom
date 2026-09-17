@@ -10,6 +10,7 @@ export const Route = createFileRoute("/f/$slug")({
   component: PublicForm,
   validateSearch: (search: Record<string, unknown>) => ({
     embed: search['embed'] === "1" || search['embed'] === 1 || search['embed'] === true,
+    r: typeof search['r'] === "string" ? (search['r'] as string) : undefined,
   }),
   head: () => ({
     meta: [
@@ -26,7 +27,7 @@ export const Route = createFileRoute("/f/$slug")({
 
 function PublicForm() {
   const { slug } = Route.useParams();
-  const { embed } = Route.useSearch();
+  const { embed, r: recipientToken } = Route.useSearch();
 
   const { data, isLoading } = useQuery({
     queryKey: ["public-form", slug],
@@ -121,6 +122,7 @@ function PublicForm() {
             : {}),
           ...(fields.jobTitle && values.job_title ? { job_title: values.job_title.trim() } : {}),
           ...(fields.rating ? { rating } : {}),
+          ...(recipientToken ? { recipient_token: recipientToken } : {}),
           website: values.website,
         }),
       });
