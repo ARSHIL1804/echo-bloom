@@ -12,6 +12,8 @@ const payloadSchema = z.object({
   job_title: z.string().trim().max(160).optional().or(z.literal("")),
   rating: z.number().int().min(1).max(5).optional(),
   source: z.string().optional(),
+  /** Personal campaign link token, when the visitor came from a campaign email. */
+  recipient_token: z.string().trim().max(64).optional(),
   /** Honeypot — must stay empty. */
   website: z.string().max(0).optional().or(z.literal("")),
 });
