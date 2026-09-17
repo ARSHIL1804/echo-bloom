@@ -199,7 +199,7 @@ function CampaignsPage() {
         open={!!toDelete}
         onOpenChange={(open) => !open && setToDelete(null)}
         title="Delete this campaign?"
-        description="Recipients and their delivery history will be removed. Testimonials already collected stay."
+        body="Recipients and their delivery history will be removed. Testimonials already collected stay."
         confirmLabel="Delete campaign"
         onConfirm={async () => {
           if (!toDelete) return;

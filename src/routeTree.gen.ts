@@ -20,6 +20,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as FSlugRouteImport } from './routes/f.$slug'
 import { Route as WidgetSlugRouteImport } from './routes/widget.$slug'
+import { Route as AuthenticatedCampaignsIndexRouteImport } from './routes/_authenticated/campaigns/index'
 import { Route as AuthenticatedFormsIndexRouteImport } from './routes/_authenticated/forms/index'
 import { Route as AuthenticatedFormsIdRouteImport } from './routes/_authenticated/forms/$id'
 import { Route as AuthenticatedFormsNewRouteImport } from './routes/_authenticated/forms/new'
@@ -87,6 +88,12 @@ const WidgetSlugRoute = WidgetSlugRouteImport.update({
   path: '/widget/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedCampaignsIndexRoute =
+  AuthenticatedCampaignsIndexRouteImport.update({
+    id: '/campaigns/',
+    path: '/campaigns/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedFormsIndexRoute = AuthenticatedFormsIndexRouteImport.update({
   id: '/forms/',
   path: '/forms/',
@@ -174,6 +181,7 @@ export interface FileRoutesByFullPath {
   '/testimonials/new': typeof AuthenticatedTestimonialsNewRoute
   '/api/public/campaign-unsubscribe': typeof ApiPublicCampaignUnsubscribeRoute
   '/api/public/submit-testimonial': typeof ApiPublicSubmitTestimonialRoute
+  '/campaigns/': typeof AuthenticatedCampaignsIndexRoute
   '/forms/': typeof AuthenticatedFormsIndexRoute
   '/layouts/': typeof AuthenticatedLayoutsIndexRoute
   '/testimonials/': typeof AuthenticatedTestimonialsIndexRoute
@@ -198,6 +206,7 @@ export interface FileRoutesByTo {
   '/testimonials/new': typeof AuthenticatedTestimonialsNewRoute
   '/api/public/campaign-unsubscribe': typeof ApiPublicCampaignUnsubscribeRoute
   '/api/public/submit-testimonial': typeof ApiPublicSubmitTestimonialRoute
+  '/campaigns': typeof AuthenticatedCampaignsIndexRoute
   '/forms': typeof AuthenticatedFormsIndexRoute
   '/layouts': typeof AuthenticatedLayoutsIndexRoute
   '/testimonials': typeof AuthenticatedTestimonialsIndexRoute
@@ -224,6 +233,7 @@ export interface FileRoutesById {
   '/_authenticated/testimonials/new': typeof AuthenticatedTestimonialsNewRoute
   '/api/public/campaign-unsubscribe': typeof ApiPublicCampaignUnsubscribeRoute
   '/api/public/submit-testimonial': typeof ApiPublicSubmitTestimonialRoute
+  '/_authenticated/campaigns/': typeof AuthenticatedCampaignsIndexRoute
   '/_authenticated/forms/': typeof AuthenticatedFormsIndexRoute
   '/_authenticated/layouts/': typeof AuthenticatedLayoutsIndexRoute
   '/_authenticated/testimonials/': typeof AuthenticatedTestimonialsIndexRoute
@@ -250,6 +260,7 @@ export interface FileRouteTypes {
     | '/testimonials/new'
     | '/api/public/campaign-unsubscribe'
     | '/api/public/submit-testimonial'
+    | '/campaigns/'
     | '/forms/'
     | '/layouts/'
     | '/testimonials/'
@@ -274,6 +285,7 @@ export interface FileRouteTypes {
     | '/testimonials/new'
     | '/api/public/campaign-unsubscribe'
     | '/api/public/submit-testimonial'
+    | '/campaigns'
     | '/forms'
     | '/layouts'
     | '/testimonials'
@@ -299,6 +311,7 @@ export interface FileRouteTypes {
     | '/_authenticated/testimonials/new'
     | '/api/public/campaign-unsubscribe'
     | '/api/public/submit-testimonial'
+    | '/_authenticated/campaigns/'
     | '/_authenticated/forms/'
     | '/_authenticated/layouts/'
     | '/_authenticated/testimonials/'
@@ -397,6 +410,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WidgetSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/campaigns/': {
+      id: '/_authenticated/campaigns/'
+      path: '/campaigns'
+      fullPath: '/campaigns/'
+      preLoaderRoute: typeof AuthenticatedCampaignsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/forms/': {
       id: '/_authenticated/forms/'
       path: '/forms'
@@ -494,6 +514,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedLayoutsNewRoute: typeof AuthenticatedLayoutsNewRoute
   AuthenticatedTestimonialsIdRoute: typeof AuthenticatedTestimonialsIdRoute
   AuthenticatedTestimonialsNewRoute: typeof AuthenticatedTestimonialsNewRoute
+  AuthenticatedCampaignsIndexRoute: typeof AuthenticatedCampaignsIndexRoute
   AuthenticatedFormsIndexRoute: typeof AuthenticatedFormsIndexRoute
   AuthenticatedLayoutsIndexRoute: typeof AuthenticatedLayoutsIndexRoute
   AuthenticatedTestimonialsIndexRoute: typeof AuthenticatedTestimonialsIndexRoute
@@ -511,6 +532,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedLayoutsNewRoute: AuthenticatedLayoutsNewRoute,
   AuthenticatedTestimonialsIdRoute: AuthenticatedTestimonialsIdRoute,
   AuthenticatedTestimonialsNewRoute: AuthenticatedTestimonialsNewRoute,
+  AuthenticatedCampaignsIndexRoute: AuthenticatedCampaignsIndexRoute,
   AuthenticatedFormsIndexRoute: AuthenticatedFormsIndexRoute,
   AuthenticatedLayoutsIndexRoute: AuthenticatedLayoutsIndexRoute,
   AuthenticatedTestimonialsIndexRoute: AuthenticatedTestimonialsIndexRoute,
