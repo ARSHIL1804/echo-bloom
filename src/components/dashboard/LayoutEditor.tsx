@@ -804,6 +804,29 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
                   </AccordionContent>
                 </AccordionItem>
               )}
+              <AccordionItem value="branding">
+                <AccordionTrigger className="text-sm">Branding</AccordionTrigger>
+                <AccordionContent className="space-y-4">
+                  <SwitchField
+                    label="Show Testimonially branding"
+                    checked={brandingVisible}
+                    disabled={!plan.removeBranding}
+                    onChange={(v) => update("branding", { show: v })}
+                  />
+                  {!plan.removeBranding && (
+                    <div className="rounded-xl bg-primary-soft p-3 text-xs text-foreground">
+                      <p>Hiding the “Powered by Testimonially” badge is a Pro feature.</p>
+                      <Button
+                        size="sm"
+                        className="mt-2 rounded-lg"
+                        onClick={() => setUpgradeOpen(true)}
+                      >
+                        Upgrade to Pro
+                      </Button>
+                    </div>
+                  )}
+                </AccordionContent>
+              </AccordionItem>
             </Accordion>
 
             <Button
@@ -854,6 +877,7 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
                   config={config}
                   testimonials={previewTestimonials}
                   viewportWidth={deviceWidth || undefined}
+                  showBranding={brandingVisible}
                 />
               </div>
             </div>
