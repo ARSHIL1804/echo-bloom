@@ -85,10 +85,16 @@ export function UpgradeDialog({
                 <Button
                   className="mt-4 w-full rounded-xl"
                   variant={current ? "outline" : id === "pro" ? "default" : "outline"}
-                  disabled={current}
-                  onClick={() => choose(id)}
+                  disabled={current || id === "free" || pending}
+                  onClick={() => void upgrade()}
                 >
-                  {current ? "Current plan" : isDowngrade ? "Downgrade" : `Choose ${plan.name}`}
+                  {current
+                    ? "Current plan"
+                    : isDowngrade
+                      ? "Downgrade"
+                      : pending
+                        ? "Opening checkout…"
+                        : `Choose ${plan.name}`}
                 </Button>
               </div>
             );
