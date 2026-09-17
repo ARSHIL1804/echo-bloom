@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Check, Copy, Globe, Loader2, Save } from "lucide-react";
+import { Check, Code2, Copy, Globe, Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import {
   copyToClipboard,
+  formEmbedCode,
   formUrl,
   mergeFormFields,
   useBrands,
@@ -209,6 +210,32 @@ export function FormEditor({ form }: { form?: CollectionForm }) {
             </Button>
           </div>
         </div>
+      )}
+
+      {liveSlug && (
+        <section className="surface-card space-y-3 p-5">
+          <div>
+            <h2 className="font-display text-sm font-bold">Embed this form on your website</h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Paste this snippet wherever you want the form to appear. It resizes to the space you
+              give it and keeps your brand styling.
+            </p>
+          </div>
+          <pre className="overflow-x-auto rounded-xl bg-muted/60 p-4 text-xs leading-relaxed">
+            <code>{formEmbedCode(liveSlug)}</code>
+          </pre>
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-xl"
+            onClick={async () => {
+              await copyToClipboard(formEmbedCode(liveSlug));
+              toast.success("Embed code copied");
+            }}
+          >
+            <Code2 className="size-4" /> Copy embed code
+          </Button>
+        </section>
       )}
 
       <div className="grid gap-6 xl:grid-cols-[380px_minmax(0,1fr)]">

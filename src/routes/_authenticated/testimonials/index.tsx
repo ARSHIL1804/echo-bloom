@@ -1,13 +1,23 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { format } from "date-fns";
-import { Check, Eye, MessageSquareQuote, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import {
+  Check,
+  Eye,
+  MessageSquareQuote,
+  Pencil,
+  Plus,
+  Search,
+  Share2,
+  Trash2,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import { useBrands, useDeleteTestimonial, useSaveTestimonial, useTestimonials } from "@/lib/data";
 import { EmptyState, PageHeader } from "@/components/dashboard/DashboardShell";
 import { Rating, SkeletonRows, StatusBadge } from "@/components/dashboard/bits";
 import { ConfirmDialog } from "@/components/dashboard/ConfirmDialog";
+import { SocialPostDialog } from "@/components/dashboard/SocialPostDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -62,6 +72,7 @@ function TestimonialsPage() {
   const [page, setPage] = useState(1);
   const [toDelete, setToDelete] = useState<string | null>(null);
   const [preview, setPreview] = useState<Testimonial | null>(null);
+  const [postFor, setPostFor] = useState<Testimonial | null>(null);
 
   const filtered = useMemo(() => {
     let rows = [...(data ?? [])];
@@ -247,6 +258,14 @@ function TestimonialsPage() {
                               <Check className="size-4" />
                             </Button>
                           )}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            title="Create social post"
+                            onClick={() => setPostFor(t)}
+                          >
+                            <Share2 className="size-4" />
+                          </Button>
                           <Button variant="ghost" size="icon" title="Preview" onClick={() => setPreview(t)}>
                             <Eye className="size-4" />
                           </Button>
@@ -289,6 +308,14 @@ function TestimonialsPage() {
                   <div className="flex items-center justify-between">
                     <Rating value={t.rating} />
                     <div className="flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label="Create social post"
+                        onClick={() => setPostFor(t)}
+                      >
+                        <Share2 className="size-4" />
+                      </Button>
                       <Button variant="ghost" size="icon" onClick={() => setPreview(t)}>
                         <Eye className="size-4" />
                       </Button>
@@ -368,6 +395,12 @@ function TestimonialsPage() {
           <p className="text-sm leading-relaxed">{preview?.content}</p>
         </DialogContent>
       </Dialog>
+
+      <SocialPostDialog
+        testimonial={postFor}
+        open={!!postFor}
+        onOpenChange={(open) => !open && setPostFor(null)}
+      />
     </div>
   );
 }

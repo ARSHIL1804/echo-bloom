@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { format } from "date-fns";
-import { ClipboardList, Copy, ExternalLink, Pencil, Plus, Trash2 } from "lucide-react";
+import { ClipboardList, Code2, Copy, ExternalLink, Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import {
   copyToClipboard,
+  formEmbedCode,
   formUrl,
   useBrands,
   useDeleteForm,
@@ -150,6 +151,18 @@ function FormsPage() {
                     }}
                   >
                     <Copy className="size-3.5" /> Copy link
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-xl"
+                    disabled={!live}
+                    onClick={async () => {
+                      await copyToClipboard(formEmbedCode(f.slug));
+                      toast.success("Embed code copied");
+                    }}
+                  >
+                    <Code2 className="size-3.5" /> Embed
                   </Button>
                   {live && (
                     <Button variant="ghost" size="sm" asChild className="rounded-xl">

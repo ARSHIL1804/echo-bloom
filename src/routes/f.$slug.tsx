@@ -8,6 +8,9 @@ import { fontStack, initials } from "@/lib/widget";
 
 export const Route = createFileRoute("/f/$slug")({
   component: PublicForm,
+  validateSearch: (search: Record<string, unknown>) => ({
+    embed: search['embed'] === "1" || search['embed'] === 1 || search['embed'] === true,
+  }),
   head: () => ({
     meta: [
       { title: "Share your experience" },
@@ -38,6 +41,7 @@ type PublicFormRow = {
 
 function PublicForm() {
   const { slug } = Route.useParams();
+  const { embed } = Route.useSearch();
 
   const { data, isLoading } = useQuery({
     queryKey: ["public-form", slug],
@@ -172,10 +176,10 @@ function PublicForm() {
   return (
     <div
       style={{
-        minHeight: "100vh",
-        background: bg,
+        minHeight: embed ? "auto" : "100vh",
+        background: embed ? "transparent" : bg,
         fontFamily: bodyFont,
-        padding: "40px 16px",
+        padding: embed ? "8px" : "40px 16px",
         boxSizing: "border-box",
       }}
     >
@@ -184,10 +188,10 @@ function PublicForm() {
           maxWidth: 520,
           margin: "0 auto",
           background: "#FFFFFF",
-          borderRadius: 20,
+          borderRadius: embed ? 16 : 20,
           border: "1px solid #E5E7EB",
-          boxShadow: "0 20px 40px -24px rgba(17,24,39,0.18)",
-          padding: 28,
+          boxShadow: embed ? "none" : "0 20px 40px -24px rgba(17,24,39,0.18)",
+          padding: embed ? 22 : 28,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
