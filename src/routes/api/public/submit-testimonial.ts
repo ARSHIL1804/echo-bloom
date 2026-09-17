@@ -113,6 +113,13 @@ export const Route = createFileRoute("/api/public/submit-testimonial")({
           return Response.json({ error: "Could not save your testimonial." }, { status: 500 });
         }
 
+        if (recipientId) {
+          await supabaseAdmin
+            .from("campaign_recipients")
+            .update({ status: "responded", responded_at: new Date().toISOString() } as never)
+            .eq("id", recipientId);
+        }
+
         return Response.json({ ok: true });
       },
     },
