@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 export type PlanId = "free" | "pro";
@@ -107,16 +106,4 @@ export function planLabel(plan: PlanId): string {
   return PLANS[plan]?.name ?? "Free";
 }
 
-/**
- * Opens Paddle checkout for a paid plan.
- * Wired up once Paddle is enabled for the project (needs the Paddle client token
- * and price IDs). Until then, upgrades surface a friendly notice.
- */
-export function openCheckout(planId: PlanId): void {
-  // TODO(paddle): replace with Paddle.js overlay checkout once payments are enabled:
-  // Paddle.Checkout.open({ items: [{ priceId, quantity: 1 }] })
-  toast.message(`${PLANS[planId].name} plan selected`, {
-    description:
-      "Checkout is being connected. You'll be able to complete your upgrade here shortly.",
-  });
-}
+/** Checkout lives in `@/lib/checkout` (Polar hosted checkout + customer portal). */

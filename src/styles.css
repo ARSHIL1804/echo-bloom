@@ -144,6 +144,26 @@
   --sidebar-accent: oklch(0.28 0.03 264.5);
   --sidebar-accent-foreground: oklch(0.98 0.003 247.9);
   --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-primary: oklch(0.66 0.175 277.2);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-ring: oklch(0.66 0.175 277.2);
+  --destructive: oklch(0.68 0.19 25.3);
+  --destructive-foreground: oklch(1 0 0);
+  --success: oklch(0.72 0.14 162.5);
+  --success-foreground: oklch(0.19 0.028 264.5);
+  --warning: oklch(0.82 0.15 78);
+  /* Landing accents, dialled up for dark surfaces */
+  --sky: oklch(0.72 0.13 244);
+  --sky-soft: oklch(0.32 0.06 237);
+  --teal: oklch(0.73 0.1 182);
+  --teal-soft: oklch(0.3 0.05 181);
+  --lime: oklch(0.78 0.16 132);
+  --lime-soft: oklch(0.32 0.07 122);
+  --chart-1: oklch(0.66 0.175 277.2);
+  --chart-2: oklch(0.72 0.14 162.5);
+  --chart-3: oklch(0.82 0.15 78);
+  --chart-4: oklch(0.68 0.19 25.3);
+  --chart-5: oklch(0.72 0.02 264.4);
 }
 
 @layer base {

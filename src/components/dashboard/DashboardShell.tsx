@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/lib/auth";
 import { useProfile } from "@/lib/data";
 import { cn } from "@/lib/utils";
@@ -85,13 +86,16 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             <p className="truncate text-xs text-muted-foreground">{user?.email}</p>
           </div>
         </div>
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-muted-foreground"
-          onClick={handleSignOut}
-        >
-          <LogOut className="size-4" /> Logout
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            className="flex-1 justify-start text-muted-foreground"
+            onClick={handleSignOut}
+          >
+            <LogOut className="size-4" /> Logout
+          </Button>
+          <ThemeToggle />
+        </div>
       </div>
     </div>
   );
@@ -104,13 +108,16 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         <div className="min-w-0">
           <header className="sticky top-0 z-40 flex h-16 items-center justify-between gap-3 border-b bg-background/85 px-5 backdrop-blur-xl lg:hidden">
             <Logo />
-            <button
-              className="grid size-10 place-items-center rounded-lg border"
-              onClick={() => setMobileOpen(true)}
-              aria-label="Open navigation"
-            >
-              <Menu className="size-4" />
-            </button>
+            <div className="flex items-center gap-1">
+              <ThemeToggle />
+              <button
+                className="grid size-10 place-items-center rounded-lg border"
+                onClick={() => setMobileOpen(true)}
+                aria-label="Open navigation"
+              >
+                <Menu className="size-4" />
+              </button>
+            </div>
           </header>
 
           <main className="px-5 py-6 sm:px-8 sm:py-8">{children}</main>

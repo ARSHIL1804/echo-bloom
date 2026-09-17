@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Check } from "lucide-react";
 import {
   Dialog,
@@ -9,7 +8,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { PLANS, PLAN_ORDER, formatLimit, openCheckout, type PlanId } from "@/lib/plans";
+import { PLANS, PLAN_ORDER, formatLimit, type PlanId } from "@/lib/plans";
+import { useUpgrade } from "@/lib/checkout";
 
 const keyFeatures: Record<PlanId, string[]> = {
   free: [
@@ -38,13 +38,7 @@ export function UpgradeDialog({
   /** Short line shown at the top, e.g. why the limit was hit. */
   reason?: string;
 }) {
-  const [pending, setPending] = useState<PlanId | null>(null);
-
-  function choose(plan: PlanId) {
-    setPending(plan);
-    openCheckout(plan);
-    setPending(null);
-  }
+  const { upgrade, pending } = useUpgrade();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -91,10 +85,16 @@ export function UpgradeDialog({
                 <Button
                   className="mt-4 w-full rounded-xl"
                   variant={current ? "outline" : id === "pro" ? "default" : "outline"}
-                  disabled={current}
-                  onClick={() => choose(id)}
+                  disabled={current || id === "free" || pending}
+                  onClick={() => void upgrade()}
                 >
-                  {current ? "Current plan" : isDowngrade ? "Downgrade" : `Choose ${plan.name}`}
+                  {current
+                    ? "Current plan"
+                    : isDowngrade
+                      ? "Downgrade"
+                      : pending
+                        ? "Opening checkout…"
+                        : `Choose ${plan.name}`}
                 </Button>
               </div>
             );
