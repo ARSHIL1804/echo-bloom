@@ -66,7 +66,7 @@ function UsageMeter({
         </div>
         <p className="text-sm text-muted-foreground">
           {loading ? (
-            <Skeleton className="h-4 w-16" />
+            <span className="inline-block h-4 w-16 animate-pulse rounded-md bg-primary/10 align-middle" />
           ) : (
             <>
               <span className="font-semibold text-foreground">{used}</span>
@@ -112,7 +112,11 @@ function BillingPage() {
         <div>
           <p className="text-sm text-muted-foreground">Current plan</p>
           <p className="mt-1 font-display text-2xl font-bold">
-            {subLoading ? <Skeleton className="h-8 w-32" /> : plan.name}
+            {subLoading ? (
+              <span className="inline-block h-8 w-32 animate-pulse rounded-md bg-primary/10 align-middle" />
+            ) : (
+              plan.name
+            )}
             <span className="ml-2 text-base font-medium text-muted-foreground">
               {plan.price}/mo
             </span>
