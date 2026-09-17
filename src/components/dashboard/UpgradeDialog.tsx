@@ -38,13 +38,7 @@ export function UpgradeDialog({
   /** Short line shown at the top, e.g. why the limit was hit. */
   reason?: string;
 }) {
-  const [pending, setPending] = useState<PlanId | null>(null);
-
-  function choose(plan: PlanId) {
-    setPending(plan);
-    openCheckout(plan);
-    setPending(null);
-  }
+  const { upgrade, pending } = useUpgrade();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
