@@ -26,6 +26,7 @@ export const Route = createFileRoute("/_authenticated/testimonials/new")({
         content: "Add a new customer testimonial to your collection.",
       },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
 });

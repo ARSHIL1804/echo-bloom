@@ -15,6 +15,7 @@ export const Route = createFileRoute("/_authenticated/testimonials/$id")({
       { property: "og:title", content: "Edit testimonial — Testimonially" },
       { property: "og:description", content: "Update a customer testimonial." },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
 });

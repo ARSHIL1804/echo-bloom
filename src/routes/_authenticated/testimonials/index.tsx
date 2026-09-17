@@ -49,6 +49,7 @@ export const Route = createFileRoute("/_authenticated/testimonials/")({
         content: "Manage all of your customer testimonials in one place.",
       },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
 });
@@ -333,9 +334,17 @@ function TestimonialsPage() {
                     </div>
                     <StatusBadge status={t.status} />
                   </div>
-                  <p className="line-clamp-3 text-sm text-muted-foreground">{t.content}</p>
-                  <div className="flex items-center justify-between">
-                    <Rating value={t.rating} />
+                  <p className="line-clamp-4 break-words text-sm leading-relaxed text-muted-foreground">
+                    {t.content}
+                  </p>
+                  <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+                    <div className="min-w-0 space-y-2">
+                      <div className="flex min-w-0 flex-wrap items-center gap-2">
+                        <Rating value={t.rating} />
+                        <SourcePill source={t.source} />
+                      </div>
+                      <p className="truncate text-xs text-muted-foreground">Brand: {brandName(t.brand_id)}</p>
+                    </div>
                     <div className="flex shrink-0 gap-1">
                       <Button
                         variant="ghost"
@@ -345,10 +354,10 @@ function TestimonialsPage() {
                       >
                         <Share2 className="size-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => setPreview(t)}>
+                      <Button variant="ghost" size="icon" aria-label="Preview" onClick={() => setPreview(t)}>
                         <Eye className="size-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" asChild>
+                      <Button variant="ghost" size="icon" asChild aria-label="Edit">
                         <Link to="/testimonials/$id" params={{ id: t.id }}>
                           <Pencil className="size-4" />
                         </Link>
@@ -356,6 +365,7 @@ function TestimonialsPage() {
                       <Button
                         variant="ghost"
                         size="icon"
+                        aria-label="Delete"
                         className="text-destructive"
                         onClick={() => setToDelete(t.id)}
                       >

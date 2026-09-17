@@ -36,6 +36,7 @@ export const Route = createFileRoute("/_authenticated/forms/")({
         content: "Create shareable forms that collect testimonials from your customers.",
       },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
 });

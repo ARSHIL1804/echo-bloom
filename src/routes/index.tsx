@@ -40,6 +40,7 @@ export const Route = createFileRoute("/")({
           "Collect, manage, customize and showcase your best customer testimonials anywhere on your website.",
       },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:url", content: "/" },
     ],
     links: [{ rel: "canonical", href: "/" }],

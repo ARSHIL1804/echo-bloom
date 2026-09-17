@@ -41,6 +41,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
         content: "Overview of your testimonials, layouts and live widgets.",
       },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
 });

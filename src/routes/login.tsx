@@ -21,6 +21,7 @@ export const Route = createFileRoute("/login")({
       { property: "og:title", content: "Login — Testimonially" },
       { property: "og:description", content: "Sign in to manage your testimonials and widgets." },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [{ rel: "canonical", href: "/login" }],
   }),

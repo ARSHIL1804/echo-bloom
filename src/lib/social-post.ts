@@ -122,9 +122,16 @@ function loadImage(src?: string | null): Promise<HTMLImageElement | null> {
   if (!src) return Promise.resolve(null);
   return new Promise((resolve) => {
     const img = new Image();
+    const timeout = window.setTimeout(() => resolve(null), 2500);
     img.crossOrigin = "anonymous";
-    img.onload = () => resolve(img);
-    img.onerror = () => resolve(null);
+    img.onload = () => {
+      window.clearTimeout(timeout);
+      resolve(img);
+    };
+    img.onerror = () => {
+      window.clearTimeout(timeout);
+      resolve(null);
+    };
     img.src = src;
   });
 }
@@ -145,6 +152,9 @@ export async function renderSocialPost(canvas: HTMLCanvasElement, options: Rende
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
+  canvas.width = preset.width;
+  canvas.height = preset.height;
+
   if (typeof document !== "undefined" && "fonts" in document) {
     try {
       await document.fonts.ready;
@@ -154,9 +164,6 @@ export async function renderSocialPost(canvas: HTMLCanvasElement, options: Rende
   }
 
   const brandLogo = options.showBrandLogo ? await loadImage(options.brandLogo) : null;
-
-  canvas.width = preset.width;
-  canvas.height = preset.height;
 
   const colors = { ...theme, ...(options.overrides ?? {}) };
   const W = preset.width;

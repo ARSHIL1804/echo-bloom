@@ -36,6 +36,7 @@ export const Route = createFileRoute("/_authenticated/layouts/")({
         content: "Create and manage the testimonial widgets you embed on your website.",
       },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
 });

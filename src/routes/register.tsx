@@ -26,6 +26,7 @@ export const Route = createFileRoute("/register")({
         content: "Create a free Testimonially account and publish your first testimonial widget.",
       },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [{ rel: "canonical", href: "/register" }],
   }),

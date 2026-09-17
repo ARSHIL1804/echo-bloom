@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Copy, Download, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
@@ -40,6 +40,7 @@ export function SocialPostDialog({
   const { data: brands } = useBrands(user?.id);
   const plan = usePlan(user?.id);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [canvasEl, setCanvasEl] = useState<HTMLCanvasElement | null>(null);
 
   const [presetId, setPresetId] = useState(SOCIAL_PRESETS[0]?.id ?? "instagram-post");
   const [themeId, setThemeId] = useState("light");
@@ -52,7 +53,7 @@ export function SocialPostDialog({
   );
   const [rendering, setRendering] = useState(false);
 
-  const brand = (brands ?? []).find((b) => b.id === testimonial?.brand_id) ?? (brands ?? [])[0];
+  const brand = (brands ?? []).find((b) => b.id === testimonial?.brand_id);
   const themes = useMemo(() => postThemes(brand?.primary_color ?? "#6366F1"), [brand]);
   const preset = SOCIAL_PRESETS.find((p) => p.id === presetId) ?? SOCIAL_PRESETS[0]!;
   const theme = themes.find((t) => t.id === themeId) ?? themes[0]!;
@@ -70,9 +71,14 @@ export function SocialPostDialog({
   const setOverride = <K extends keyof SocialPostOverrides>(key: K, value: SocialPostOverrides[K]) =>
     setOverrides((current) => ({ ...current, [key]: value }));
 
+  const setCanvasRef = useCallback((node: HTMLCanvasElement | null) => {
+    canvasRef.current = node;
+    setCanvasEl(node);
+  }, []);
+
   useEffect(() => {
     if (!open || !testimonial) return;
-    const canvas = canvasRef.current;
+    const canvas = canvasEl;
     if (!canvas) return;
     let cancelled = false;
     setRendering(true);
@@ -98,6 +104,7 @@ export function SocialPostDialog({
   }, [
     open,
     testimonial,
+    canvasEl,
     preset,
     theme,
     brand,
@@ -112,7 +119,7 @@ export function SocialPostDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92vh] w-[calc(100vw-1.5rem)] overflow-y-auto rounded-2xl p-4 sm:max-w-4xl sm:p-6">
+      <DialogContent className="top-4 max-h-[calc(100vh-2rem)] w-[calc(100vw-1.5rem)] translate-y-0 overflow-y-auto rounded-2xl bg-card p-4 sm:top-[50%] sm:max-h-[92vh] sm:max-w-4xl sm:translate-y-[-50%] sm:p-6">
         <DialogHeader>
           <DialogTitle className="font-display">Create social post</DialogTitle>
           <DialogDescription>
@@ -210,7 +217,7 @@ export function SocialPostDialog({
             <div className="grid place-items-center rounded-2xl border bg-muted/40 p-3 sm:p-4">
               <div className="relative w-full max-w-[420px]">
                 <canvas
-                  ref={canvasRef}
+                  ref={setCanvasRef}
                   className="h-auto w-full rounded-xl shadow-sm"
                   aria-label="Social post preview"
                 />

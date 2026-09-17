@@ -32,6 +32,7 @@ export const Route = createFileRoute("/_authenticated/brand")({
         content: "Set your brand colors, fonts, and details so every widget matches your site.",
       },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
 });
