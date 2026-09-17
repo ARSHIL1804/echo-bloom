@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
@@ -129,7 +129,7 @@ function BillingPage() {
       .finally(() => {
         window.history.replaceState(null, "", "/billing");
       });
-  }, [checkout_id, confirm, navigate, queryClient]);
+  }, [checkout_id, confirm, queryClient]);
 
   function choose(id: PlanId) {
     if (id === "pro") {
