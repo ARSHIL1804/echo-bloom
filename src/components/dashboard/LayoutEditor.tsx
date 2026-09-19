@@ -239,7 +239,7 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
               <Check className="size-4" /> Your testimonial widget is live
             </p>
             <p className="mt-1 truncate font-mono text-xs text-muted-foreground">
-              {widgetUrl(publishedSlug)}
+              {widgetUrl(publishedSlug, widgetTheme)}
             </p>
           </div>
           <div className="flex gap-2">
@@ -248,7 +248,7 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
               size="sm"
               className="rounded-xl"
               onClick={async () => {
-                await copyToClipboard(widgetUrl(publishedSlug));
+                await copyToClipboard(widgetUrl(publishedSlug, widgetTheme));
                 toast.success("Widget URL copied");
               }}
             >

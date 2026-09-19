@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Code2, Copy, Globe, Loader2, Monitor, Pencil, Smartphone, Tablet } from "lucide-react";
+import { Code2, Copy, Globe, Loader2, Monitor, Moon, Pencil, Smartphone, Sun, Tablet } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import {
@@ -13,7 +13,7 @@ import {
   widgetUrl,
 } from "@/lib/data";
 import { formatLimit, usePlan } from "@/lib/plans";
-import { mergeConfig, type LayoutType } from "@/lib/widget";
+import { mergeConfig, type LayoutType, type WidgetTheme } from "@/lib/widget";
 import { TestimonialWidget } from "@/components/widget/TestimonialWidget";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
 import { StatusBadge } from "@/components/dashboard/bits";
@@ -56,6 +56,7 @@ function PreviewPage() {
   const publishedCount = (layouts ?? []).filter((l) => l.status === "published").length;
   const save = useSaveLayout(user?.id);
   const [device, setDevice] = useState<(typeof devices)[number]["key"]>("desktop");
+  const [widgetTheme, setWidgetTheme] = useState<WidgetTheme>("light");
 
   if (isLoading) {
     return (
@@ -78,6 +79,7 @@ function PreviewPage() {
     .map((tid) => (testimonials ?? []).find((t) => t.id === tid))
     .filter(Boolean);
   const width = devices.find((d) => d.key === device)!.width;
+  const config = mergeConfig(layout.configuration, widgetTheme);
 
   async function togglePublish() {
     if (!published && publishedCount >= plan.publishedLayouts) {
@@ -129,7 +131,29 @@ function PreviewPage() {
               <h2 className="font-display text-sm font-bold">Preview</h2>
               <StatusBadge status={layout.status} />
             </div>
-            <div className="flex gap-1 rounded-xl bg-muted p-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex gap-1 rounded-xl bg-muted p-1">
+                {(["light", "dark"] as const).map((theme) => {
+                  const Icon = theme === "light" ? Sun : Moon;
+                  return (
+                    <Button
+                      key={theme}
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      title={`${theme} theme`}
+                      onClick={() => setWidgetTheme(theme)}
+                      className={cn(
+                        "h-8 rounded-lg px-2 text-xs capitalize",
+                        widgetTheme === theme && "bg-card text-foreground shadow-soft",
+                      )}
+                    >
+                      <Icon className="size-3.5" /> {theme}
+                    </Button>
+                  );
+                })}
+              </div>
+              <div className="flex gap-1 rounded-xl bg-muted p-1">
               {devices.map((d) => (
                 <button
                   key={d.key}
@@ -146,6 +170,7 @@ function PreviewPage() {
                   <d.icon className="size-4" />
                 </button>
               ))}
+              </div>
             </div>
           </div>
           <div className="flex justify-center overflow-x-auto bg-muted/40 p-4">
@@ -155,11 +180,11 @@ function PreviewPage() {
             >
               <TestimonialWidget
                 type={layout.type as LayoutType}
-                config={mergeConfig(layout.configuration)}
+                config={config}
                 testimonials={picked as never}
                 viewportWidth={width || undefined}
                 showBranding={
-                  plan.removeBranding ? mergeConfig(layout.configuration).branding.show : true
+                  plan.removeBranding ? config.branding.show : true
                 }
               />
             </div>
@@ -175,7 +200,7 @@ function PreviewPage() {
                 : "Publish this layout to activate its public link."}
             </p>
             <p className="mt-3 truncate rounded-xl border bg-muted/50 px-3 py-2 font-mono text-xs">
-              {widgetUrl(layout.public_slug)}
+              {widgetUrl(layout.public_slug, widgetTheme)}
             </p>
             <Button
               variant="outline"
@@ -183,7 +208,7 @@ function PreviewPage() {
               className="mt-3 w-full rounded-xl"
               disabled={!published}
               onClick={async () => {
-                await copyToClipboard(widgetUrl(layout.public_slug));
+                await copyToClipboard(widgetUrl(layout.public_slug, widgetTheme));
                 toast.success("Widget URL copied");
               }}
             >
@@ -199,7 +224,7 @@ function PreviewPage() {
               Paste this snippet into your website's HTML where the testimonials should appear.
             </p>
             <pre className="mt-3 overflow-x-auto rounded-xl border bg-muted/50 p-3 text-[11px] leading-relaxed">
-              {embedCode(layout.public_slug)}
+              {embedCode(layout.public_slug, widgetTheme)}
             </pre>
             <Button
               variant="outline"
@@ -207,7 +232,7 @@ function PreviewPage() {
               className="mt-3 w-full rounded-xl"
               disabled={!published}
               onClick={async () => {
-                await copyToClipboard(embedCode(layout.public_slug));
+                await copyToClipboard(embedCode(layout.public_slug, widgetTheme));
                 toast.success("Embed code copied");
               }}
             >
