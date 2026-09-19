@@ -126,8 +126,8 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
     const q = search.trim().toLowerCase();
     if (!q) return rows;
     return rows.filter((t) =>
-      [t.customer_name, t.company_name, t.content].filter(Boolean).some((v) =>
-        v!.toLowerCase().includes(q),
+      [t.customer_name, t.company_name, t.content].some(
+        (value) => typeof value === "string" && value.toLowerCase().includes(q),
       ),
     );
   }, [all, search, brandId]);
@@ -187,7 +187,7 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
     }
   }
 
-  const deviceWidth = devices.find((d) => d.key === device)!.width;
+  const deviceWidth = devices.find((d) => d.key === device)?.width ?? 0;
 
   return (
     <div className="space-y-6">
@@ -415,26 +415,7 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
           <section className="surface-card p-5">
             <div className="flex items-center justify-between gap-3">
               <h2 className="font-display text-sm font-bold">Customization</h2>
-              <div className="flex gap-1 rounded-lg bg-muted p-1" aria-label="Widget theme">
-                {(["light", "dark"] as const).map((theme) => {
-                  const Icon = theme === "light" ? Sun : Moon;
-                  return (
-                    <Button
-                      key={theme}
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setWidgetTheme(theme)}
-                      className={cn(
-                        "h-7 rounded-md px-2 text-xs capitalize",
-                        widgetTheme === theme && "bg-card text-foreground shadow-soft",
-                      )}
-                    >
-                      <Icon className="size-3.5" /> {theme}
-                    </Button>
-                  );
-                })}
-              </div>
+              <span className="text-xs capitalize text-muted-foreground">Editing {widgetTheme}</span>
             </div>
             <Accordion type="multiple" defaultValue={["colors"]} className="mt-2">
               <AccordionItem value="colors">
@@ -899,8 +880,29 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
                 <h2 className="font-display text-sm font-bold">Preview</h2>
                 <span className="text-xs capitalize text-muted-foreground">{widgetTheme}</span>
               </div>
-              <div className="flex gap-1 rounded-xl bg-muted p-1">
-                {devices.map((d) => (
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex gap-1 rounded-xl bg-muted p-1" aria-label="Widget theme">
+                  {(["light", "dark"] as const).map((theme) => {
+                    const Icon = theme === "light" ? Sun : Moon;
+                    return (
+                      <Button
+                        key={theme}
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setWidgetTheme(theme)}
+                        className={cn(
+                          "h-8 rounded-lg px-2 text-xs capitalize",
+                          widgetTheme === theme && "bg-card text-foreground shadow-soft",
+                        )}
+                      >
+                        <Icon className="size-3.5" /> {theme}
+                      </Button>
+                    );
+                  })}
+                </div>
+                <div className="flex gap-1 rounded-xl bg-muted p-1">
+                  {devices.map((d) => (
                   <button
                     key={d.key}
                     type="button"
@@ -915,7 +917,8 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
                   >
                     <d.icon className="size-4" />
                   </button>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
             <div className="flex justify-center overflow-x-auto bg-muted/40 p-4">
