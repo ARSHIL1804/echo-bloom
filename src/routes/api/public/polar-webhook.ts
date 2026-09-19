@@ -54,18 +54,30 @@ export const Route = createFileRoute("/api/public/polar-webhook")({
           return new Response("ok");
         }
 
+        // Access ends only when Polar revokes the subscription (period actually
+        // over / refunded) or the status is genuinely dead. A cancellation just
+        // turns auto-renew off — Pro stays usable until the period ends.
         const revoked =
-          type === "subscription.revoked" ||
-          type === "subscription.canceled" ||
-          !ACTIVE_STATUSES.has(sub.status ?? "");
+          type === "subscription.revoked" || DEAD_STATUSES.has(sub.status ?? "");
+
+        const uncanceled = type === "subscription.uncanceled";
+        const cancelAtPeriodEnd = uncanceled ? false : (sub.cancel_at_period_end ?? false);
+        const periodEnd = sub.ends_at ?? sub.current_period_end ?? null;
+
+        let status: string;
+        if (revoked) status = sub.status ?? "canceled";
+        else if (cancelAtPeriodEnd) status = "canceled";
+        else status = sub.status && sub.status !== "canceled" ? sub.status : "active";
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { error } = await supabaseAdmin.from("subscriptions").upsert(
           {
             user_id: userId,
             plan: revoked ? "free" : "pro",
-            status: revoked ? (sub.status ?? "canceled") : "active",
-            current_period_end: sub.current_period_end ?? null,
+            status,
+            cancel_at_period_end: revoked ? false : cancelAtPeriodEnd,
+            canceled_at: cancelAtPeriodEnd ? (sub.canceled_at ?? new Date().toISOString()) : null,
+            current_period_end: periodEnd,
             polar_customer_id: sub.customer_id ?? sub.customer?.id ?? null,
             polar_subscription_id: sub.id ?? null,
             polar_product_id: sub.product_id ?? null,
