@@ -7,13 +7,17 @@ type PolarSubscription = {
   customer_id?: string;
   product_id?: string;
   current_period_end?: string | null;
+  ends_at?: string | null;
+  cancel_at_period_end?: boolean | null;
+  canceled_at?: string | null;
   customer?: { id?: string; external_id?: string | null } | null;
   metadata?: Record<string, unknown> | null;
 };
 
 type PolarEvent = { type?: string; data?: PolarSubscription };
 
-const ACTIVE_STATUSES = new Set(["active", "trialing"]);
+/** Statuses that mean the subscription is over — access ends immediately. */
+const DEAD_STATUSES = new Set(["unpaid", "incomplete_expired"]);
 
 export const Route = createFileRoute("/api/public/polar-webhook")({
   server: {
