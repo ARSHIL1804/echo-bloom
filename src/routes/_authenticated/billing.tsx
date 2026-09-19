@@ -252,8 +252,8 @@ function BillingPage() {
         <div className="mt-4 grid max-w-3xl gap-4 md:grid-cols-2">
           {PLAN_ORDER.map((id) => {
             const p = PLANS[id];
-            const current = id === subscription?.plan;
-            const isDowngrade = PLAN_ORDER.indexOf(id) < PLAN_ORDER.indexOf(subscription?.plan ?? "free");
+            const current = id === activePlan;
+            const isDowngrade = PLAN_ORDER.indexOf(id) < PLAN_ORDER.indexOf(activePlan);
             return (
               <div
                 key={id}
