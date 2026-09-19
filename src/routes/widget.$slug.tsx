@@ -2,10 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { TestimonialWidget } from "@/components/widget/TestimonialWidget";
 import { getPublicWidgetBySlug, type PublicWidgetLookup } from "@/lib/public-lookups.functions";
-import { mergeConfig } from "@/lib/widget";
+import { mergeConfig, type WidgetTheme } from "@/lib/widget";
 import { PLANS, normalizePlan } from "@/lib/plans";
 
 export const Route = createFileRoute("/widget/$slug")({
+  validateSearch: (search: Record<string, unknown>): { theme: WidgetTheme } => ({
+    theme: search["theme"] === "dark" ? "dark" : "light",
+  }),
   component: PublicWidget,
   head: () => ({
     meta: [
@@ -22,6 +25,7 @@ export const Route = createFileRoute("/widget/$slug")({
 
 function PublicWidget() {
   const { slug } = Route.useParams();
+  const { theme } = Route.useSearch();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["public-widget", slug],
@@ -55,7 +59,7 @@ function PublicWidget() {
     );
   }
 
-  const config = mergeConfig(data.layout.configuration);
+  const config = mergeConfig(data.layout.configuration, theme);
   const canRemoveBranding = PLANS[normalizePlan(data.ownerPlan)].removeBranding;
   const showBadge = canRemoveBranding ? config.branding.show : true;
 

@@ -5,12 +5,14 @@ import {
   Copy,
   GripVertical,
   Loader2,
+  Moon,
   Monitor,
   Search,
   Smartphone,
   Tablet,
   Globe,
   Save,
+  Sun,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
@@ -26,10 +28,13 @@ import { formatLimit, usePlan } from "@/lib/plans";
 import {
   LAYOUT_TYPES,
   defaultConfig,
+  defaultDarkConfig,
   mergeConfig,
+  mergeThemedConfig,
   type LayoutRecord,
   type LayoutType,
   type WidgetConfig,
+  type WidgetTheme,
 } from "@/lib/widget";
 import { TestimonialWidget } from "@/components/widget/TestimonialWidget";
 import { UpgradeDialog } from "@/components/dashboard/UpgradeDialog";
@@ -62,7 +67,8 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
   const [name, setName] = useState(layout?.name ?? "My testimonial widget");
   const [type, setType] = useState<LayoutType>((layout?.type as LayoutType) ?? "grid");
   const [selected, setSelected] = useState<string[]>(layout?.selected_testimonials ?? []);
-  const [config, setConfig] = useState<WidgetConfig>(mergeConfig(layout?.configuration));
+  const [themedConfig, setThemedConfig] = useState(() => mergeThemedConfig(layout?.configuration));
+  const [widgetTheme, setWidgetTheme] = useState<WidgetTheme>("light");
   const [device, setDevice] = useState<DeviceKey>("desktop");
   const [search, setSearch] = useState("");
   const [brandId, setBrandId] = useState<string>(layout?.brand_id ?? "");
@@ -72,6 +78,7 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
   const [publishedSlug, setPublishedSlug] = useState<string | null>(
     layout?.status === "published" ? layout.public_slug : null,
   );
+  const config = themedConfig.themes[widgetTheme];
 
   useEffect(() => {
     if (!dirty) return;
@@ -90,7 +97,16 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
   const brandingVisible = plan.removeBranding ? config.branding.show : true;
 
   function update<K extends keyof WidgetConfig>(section: K, values: Partial<WidgetConfig[K]>) {
-    setConfig((c) => ({ ...c, [section]: { ...c[section], ...values } }));
+    setThemedConfig((current) => ({
+      ...current,
+      themes: {
+        ...current.themes,
+        [widgetTheme]: {
+          ...current.themes[widgetTheme],
+          [section]: { ...current.themes[widgetTheme][section], ...values },
+        },
+      },
+    }));
     touch();
   }
 
@@ -110,8 +126,8 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
     const q = search.trim().toLowerCase();
     if (!q) return rows;
     return rows.filter((t) =>
-      [t.customer_name, t.company_name, t.content].filter(Boolean).some((v) =>
-        v!.toLowerCase().includes(q),
+      [t.customer_name, t.company_name, t.content].some(
+        (value) => typeof value === "string" && value.toLowerCase().includes(q),
       ),
     );
   }, [all, search, brandId]);
@@ -152,7 +168,7 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
           type,
           brand_id: brandId || null,
           selected_testimonials: selected,
-          configuration: config as unknown as LayoutRecord["configuration"],
+          configuration: themedConfig as unknown as LayoutRecord["configuration"],
           status: mode === "publish" ? "published" : layout?.status ?? "draft",
         },
       });
@@ -171,7 +187,7 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
     }
   }
 
-  const deviceWidth = devices.find((d) => d.key === device)!.width;
+  const deviceWidth = devices.find((d) => d.key === device)?.width ?? 0;
 
   return (
     <div className="space-y-6">
@@ -223,7 +239,7 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
               <Check className="size-4" /> Your testimonial widget is live
             </p>
             <p className="mt-1 truncate font-mono text-xs text-muted-foreground">
-              {widgetUrl(publishedSlug)}
+              {widgetUrl(publishedSlug, widgetTheme)}
             </p>
           </div>
           <div className="flex gap-2">
@@ -232,7 +248,7 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
               size="sm"
               className="rounded-xl"
               onClick={async () => {
-                await copyToClipboard(widgetUrl(publishedSlug));
+                await copyToClipboard(widgetUrl(publishedSlug, widgetTheme));
                 toast.success("Widget URL copied");
               }}
             >
@@ -397,7 +413,10 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
           </section>
 
           <section className="surface-card p-5">
-            <h2 className="font-display text-sm font-bold">Customization</h2>
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="font-display text-sm font-bold">Customization</h2>
+              <span className="text-xs capitalize text-muted-foreground">Editing {widgetTheme}</span>
+            </div>
             <Accordion type="multiple" defaultValue={["colors"]} className="mt-2">
               <AccordionItem value="colors">
                 <AccordionTrigger className="text-sm">Colors</AccordionTrigger>
@@ -838,11 +857,17 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
               size="sm"
               className="mt-3 w-full"
               onClick={() => {
-                setConfig(defaultConfig);
+                setThemedConfig((current) => ({
+                  ...current,
+                  themes: {
+                    ...current.themes,
+                    [widgetTheme]: widgetTheme === "light" ? defaultConfig : defaultDarkConfig,
+                  },
+                }));
                 touch();
               }}
             >
-              Reset to defaults
+              Reset {widgetTheme} to defaults
             </Button>
           </section>
         </div>
@@ -851,9 +876,33 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
         <div className="space-y-3">
           <div className="surface-card sticky top-4 overflow-hidden">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b px-5 py-3.5">
-              <h2 className="font-display text-sm font-bold">Preview</h2>
-              <div className="flex gap-1 rounded-xl bg-muted p-1">
-                {devices.map((d) => (
+              <div className="flex items-center gap-3">
+                <h2 className="font-display text-sm font-bold">Preview</h2>
+                <span className="text-xs capitalize text-muted-foreground">{widgetTheme}</span>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex gap-1 rounded-xl bg-muted p-1" aria-label="Widget theme">
+                  {(["light", "dark"] as const).map((theme) => {
+                    const Icon = theme === "light" ? Sun : Moon;
+                    return (
+                      <Button
+                        key={theme}
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setWidgetTheme(theme)}
+                        className={cn(
+                          "h-8 rounded-lg px-2 text-xs capitalize",
+                          widgetTheme === theme && "bg-card text-foreground shadow-soft",
+                        )}
+                      >
+                        <Icon className="size-3.5" /> {theme}
+                      </Button>
+                    );
+                  })}
+                </div>
+                <div className="flex gap-1 rounded-xl bg-muted p-1">
+                  {devices.map((d) => (
                   <button
                     key={d.key}
                     type="button"
@@ -868,7 +917,8 @@ export function LayoutEditor({ layout }: { layout?: LayoutRecord }) {
                   >
                     <d.icon className="size-4" />
                   </button>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
             <div className="flex justify-center overflow-x-auto bg-muted/40 p-4">
