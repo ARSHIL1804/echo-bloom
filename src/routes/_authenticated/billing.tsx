@@ -107,6 +107,15 @@ function BillingPage() {
   const confirmed = useRef(false);
 
   const publishedCount = (layouts ?? []).filter((l) => l.status === "published").length;
+  const activePlan = effectivePlan(subscription);
+  const cancelPending = isCancelPending(subscription);
+  const periodEndLabel = subscription?.current_period_end
+    ? new Date(subscription.current_period_end).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : null;
 
   // Coming back from checkout: confirm the payment and refresh the plan.
   useEffect(() => {
