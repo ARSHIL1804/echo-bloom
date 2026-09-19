@@ -171,14 +171,15 @@ function BillingPage() {
               {plan.price}/mo
             </span>
           </p>
-          {subscription?.current_period_end && subscription.plan !== "free" && (
+          {periodEndLabel && activePlan !== "free" && (
             <p className="mt-1 text-xs text-muted-foreground">
-              Renews{" "}
-              {new Date(subscription.current_period_end).toLocaleDateString(undefined, {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
+              {cancelPending ? (
+                <>
+                  Ends {periodEndLabel} — Pro features stay available until then.
+                </>
+              ) : (
+                <>Renews {periodEndLabel}</>
+              )}
             </p>
           )}
         </div>
