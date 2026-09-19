@@ -184,13 +184,25 @@ function BillingPage() {
           )}
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2 rounded-xl bg-success/10 px-4 py-2 text-sm font-medium text-success">
-            <span className="size-2 rounded-full bg-success" />
-            {subscription?.status === "active" || !subscription?.status
-              ? "Active"
-              : subscription.status}
+          <div
+            className={cn(
+              "flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium",
+              cancelPending ? "bg-warning/10 text-warning" : "bg-success/10 text-success",
+            )}
+          >
+            <span
+              className={cn(
+                "size-2 rounded-full",
+                cancelPending ? "bg-warning" : "bg-success",
+              )}
+            />
+            {cancelPending
+              ? "Active until period ends"
+              : subscription?.status === "active" || !subscription?.status
+                ? "Active"
+                : subscription.status}
           </div>
-          {subscription?.plan === "pro" && (
+          {activePlan === "pro" && (
             <Button
               variant="outline"
               className="rounded-xl"
