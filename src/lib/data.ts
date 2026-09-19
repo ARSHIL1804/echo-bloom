@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import type { LayoutRecord, Testimonial } from "./widget";
+import type { LayoutRecord, Testimonial, WidgetTheme } from "./widget";
 
 export type Brand = {
   id: string;
@@ -282,13 +282,13 @@ export function useDeleteLayout() {
   });
 }
 
-export function widgetUrl(slug: string) {
+export function widgetUrl(slug: string, theme?: WidgetTheme) {
   const origin = typeof window === "undefined" ? "" : window.location.origin;
-  return `${origin}/widget/${slug}`;
+  return `${origin}/widget/${slug}${theme ? `?theme=${theme}` : ""}`;
 }
 
-export function embedCode(slug: string) {
-  return `<iframe\n  src="${widgetUrl(slug)}"\n  width="100%"\n  height="500"\n  frameborder="0">\n</iframe>`;
+export function embedCode(slug: string, theme?: WidgetTheme) {
+  return `<iframe\n  src="${widgetUrl(slug, theme)}"\n  width="100%"\n  height="500"\n  frameborder="0">\n</iframe>`;
 }
 
 export async function copyToClipboard(value: string) {

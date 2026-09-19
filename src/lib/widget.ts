@@ -104,6 +104,13 @@ export type WidgetConfig = {
   };
 };
 
+export type WidgetTheme = "light" | "dark";
+
+export type ThemedWidgetConfig = {
+  version: 2;
+  themes: Record<WidgetTheme, WidgetConfig>;
+};
+
 export const FONT_OPTIONS = [
   "Inter",
   "Roboto",
@@ -165,21 +172,54 @@ export const defaultConfig: WidgetConfig = {
   branding: { show: true },
 };
 
-export function mergeConfig(raw: unknown): WidgetConfig {
-  const value = (raw ?? {}) as Partial<WidgetConfig>;
+export const defaultDarkConfig: WidgetConfig = {
+  ...defaultConfig,
+  colors: {
+    background: "#111827",
+    card: "#1F2937",
+    text: "#F9FAFB",
+    secondaryText: "#9CA3AF",
+    accent: "#818CF8",
+    border: "#374151",
+    star: "#FBBF24",
+  },
+};
+
+function isThemedConfig(value: unknown): value is Partial<ThemedWidgetConfig> & {
+  themes: Partial<Record<WidgetTheme, unknown>>;
+} {
+  if (!value || typeof value !== "object") return false;
+  const candidate = value as { themes?: unknown };
+  return !!candidate.themes && typeof candidate.themes === "object";
+}
+
+export function mergeConfig(raw: unknown, theme: WidgetTheme = "light"): WidgetConfig {
+  const selected = isThemedConfig(raw) ? raw.themes[theme] : raw;
+  const fallback = theme === "dark" ? defaultDarkConfig : defaultConfig;
+  const value = (selected ?? {}) as Partial<WidgetConfig>;
   return {
-    colors: { ...defaultConfig.colors, ...(value.colors ?? {}) },
-    typography: { ...defaultConfig.typography, ...(value.typography ?? {}) },
-    card: { ...defaultConfig.card, ...(value.card ?? {}) },
-    avatar: { ...defaultConfig.avatar, ...(value.avatar ?? {}) },
-    rating: { ...defaultConfig.rating, ...(value.rating ?? {}) },
-    layout: { ...defaultConfig.layout, ...(value.layout ?? {}) },
-    carousel: { ...defaultConfig.carousel, ...(value.carousel ?? {}) },
-    wall: { ...defaultConfig.wall, ...(value.wall ?? {}) },
-    marquee: { ...defaultConfig.marquee, ...(value.marquee ?? {}) },
-    badge: { ...defaultConfig.badge, ...(value.badge ?? {}) },
-    toast: { ...defaultConfig.toast, ...(value.toast ?? {}) },
-    branding: { ...defaultConfig.branding, ...(value.branding ?? {}) },
+    colors: { ...fallback.colors, ...(value.colors ?? {}) },
+    typography: { ...fallback.typography, ...(value.typography ?? {}) },
+    card: { ...fallback.card, ...(value.card ?? {}) },
+    avatar: { ...fallback.avatar, ...(value.avatar ?? {}) },
+    rating: { ...fallback.rating, ...(value.rating ?? {}) },
+    layout: { ...fallback.layout, ...(value.layout ?? {}) },
+    carousel: { ...fallback.carousel, ...(value.carousel ?? {}) },
+    wall: { ...fallback.wall, ...(value.wall ?? {}) },
+    marquee: { ...fallback.marquee, ...(value.marquee ?? {}) },
+    badge: { ...fallback.badge, ...(value.badge ?? {}) },
+    toast: { ...fallback.toast, ...(value.toast ?? {}) },
+    branding: { ...fallback.branding, ...(value.branding ?? {}) },
+  };
+}
+
+export function mergeThemedConfig(raw: unknown): ThemedWidgetConfig {
+  return {
+    version: 2,
+    themes: {
+      light: mergeConfig(raw, "light"),
+      dark: mergeConfig(raw, "dark"),
+    },
   };
 }
 
