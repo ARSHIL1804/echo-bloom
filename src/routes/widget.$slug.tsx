@@ -7,7 +7,7 @@ import { PLANS, normalizePlan } from "@/lib/plans";
 
 export const Route = createFileRoute("/widget/$slug")({
   validateSearch: (search: Record<string, unknown>): { theme: WidgetTheme } => ({
-    theme: search.theme === "dark" ? "dark" : "light",
+    theme: search["theme"] === "dark" ? "dark" : "light",
   }),
   component: PublicWidget,
   head: () => ({

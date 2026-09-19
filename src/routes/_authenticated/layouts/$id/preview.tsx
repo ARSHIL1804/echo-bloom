@@ -78,7 +78,7 @@ function PreviewPage() {
   const picked = layout.selected_testimonials
     .map((tid) => (testimonials ?? []).find((t) => t.id === tid))
     .filter(Boolean);
-  const width = devices.find((d) => d.key === device)!.width;
+  const width = devices.find((d) => d.key === device)?.width ?? 0;
   const config = mergeConfig(layout.configuration, widgetTheme);
 
   async function togglePublish() {
@@ -89,7 +89,7 @@ function PreviewPage() {
       return;
     }
     await save.mutateAsync({
-      id: layout!.id,
+      id: layout.id,
       values: { status: published ? "draft" : "published" },
     });
     toast.success(published ? "Widget unpublished" : "Your testimonial widget is now live");
