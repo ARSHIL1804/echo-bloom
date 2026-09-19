@@ -194,7 +194,7 @@ function isThemedConfig(value: unknown): value is Partial<ThemedWidgetConfig> & 
 }
 
 export function mergeConfig(raw: unknown, theme: WidgetTheme = "light"): WidgetConfig {
-  const selected = isThemedConfig(raw) ? raw.themes[theme] : raw;
+  const selected = isThemedConfig(raw) ? raw.themes[theme] : theme === "light" ? raw : undefined;
   const fallback = theme === "dark" ? defaultDarkConfig : defaultConfig;
   const value = (selected ?? {}) as Partial<WidgetConfig>;
   return {
