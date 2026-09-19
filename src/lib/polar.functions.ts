@@ -91,6 +91,8 @@ export const confirmCheckout = createServerFn({ method: "POST" })
           user_id: userId,
           plan: "pro",
           status: "active",
+          cancel_at_period_end: false,
+          canceled_at: null,
           polar_customer_id: checkout.customer_id,
           polar_subscription_id: checkout.subscription_id,
           polar_product_id: checkout.product_id,

@@ -70,7 +70,34 @@ export type Subscription = {
   plan: PlanId;
   status: string;
   current_period_end: string | null;
+  cancel_at_period_end: boolean;
 };
+
+/** Statuses where a paid plan is still usable right now. */
+const USABLE_STATUSES = new Set(["active", "trialing", "past_due"]);
+
+/**
+ * The plan the user can actually use right now.
+ * A cancelled Pro plan keeps working until the paid period ends; after that
+ * date it falls back to Free even if no webhook arrived.
+ */
+export function effectivePlan(sub?: Subscription | null): PlanId {
+  if (!sub) return "free";
+  const plan = normalizePlan(sub.plan);
+  if (plan === "free") return "free";
+  if (USABLE_STATUSES.has(sub.status)) return "pro";
+  if (sub.status === "canceled" || sub.cancel_at_period_end) {
+    const end = sub.current_period_end ? new Date(sub.current_period_end).getTime() : 0;
+    return end > Date.now() ? "pro" : "free";
+  }
+  return "free";
+}
+
+/** True when Pro is active but set to stop renewing at the end of the period. */
+export function isCancelPending(sub?: Subscription | null): boolean {
+  if (!sub) return false;
+  return effectivePlan(sub) === "pro" && (sub.cancel_at_period_end || sub.status === "canceled");
+}
 
 export function useSubscription(userId?: string) {
   return useQuery({
@@ -79,15 +106,31 @@ export function useSubscription(userId?: string) {
     queryFn: async (): Promise<Subscription> => {
       const { data, error } = await supabase
         .from("subscriptions")
-        .select("user_id, plan, status, current_period_end")
+        .select("user_id, plan, status, current_period_end, cancel_at_period_end")
         .eq("user_id", userId!)
         .maybeSingle();
       if (error) throw error;
       if (data) {
-        const row = data as { user_id: string; plan: string; status: string; current_period_end: string | null };
-        return { ...row, plan: normalizePlan(row.plan) };
+        const row = data as {
+          user_id: string;
+          plan: string;
+          status: string;
+          current_period_end: string | null;
+          cancel_at_period_end: boolean | null;
+        };
+        return {
+          ...row,
+          plan: normalizePlan(row.plan),
+          cancel_at_period_end: row.cancel_at_period_end ?? false,
+        };
       }
-      return { user_id: userId!, plan: "free", status: "active", current_period_end: null };
+      return {
+        user_id: userId!,
+        plan: "free",
+        status: "active",
+        current_period_end: null,
+        cancel_at_period_end: false,
+      };
     },
   });
 }
@@ -95,7 +138,7 @@ export function useSubscription(userId?: string) {
 /** Current plan limits for the signed-in user. Defaults to Free. */
 export function usePlan(userId?: string): PlanLimits {
   const { data } = useSubscription(userId);
-  return PLANS[normalizePlan(data?.plan)];
+  return PLANS[effectivePlan(data)];
 }
 
 export function formatLimit(n: number): string {
