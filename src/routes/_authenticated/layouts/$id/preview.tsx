@@ -89,7 +89,7 @@ function PreviewPage() {
       return;
     }
     await save.mutateAsync({
-      id: layout.id,
+      id,
       values: { status: published ? "draft" : "published" },
     });
     toast.success(published ? "Widget unpublished" : "Your testimonial widget is now live");
